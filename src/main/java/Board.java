@@ -4,7 +4,9 @@ import java.util.Random;
 import java.util.Set;
 
 public class Board {
-    public static void main(String[] args) {
+    HashMap<String, Ship> shipHashMap;
+    int [][] BoardMatrix = new int[10][10];
+    Board(){
         int max = 10, min = 0;
 
         int shipsNeeded = 5;
@@ -12,7 +14,6 @@ public class Board {
 
         Set<String> generatedPositions = new LinkedHashSet<>();
         Set<Integer> generatedLengths = new LinkedHashSet<>();
-        int [][] BoardMatrix = new int[10][10];
         int[] generatedLength = new int[5];
         int[] generatedDir = new int[5];
         int[] arr = new int[]{2, 3, 3, 4, 5};
@@ -41,7 +42,7 @@ public class Board {
                 }
             }
         }
-        HashMap<String, Ship> shipHashMap = generateShipHashMap(generatedPositions, generatedLength, generatedDir);
+        shipHashMap = generateShipHashMap(generatedPositions, generatedLength, generatedDir);
         System.out.println(shipHashMap);
     }
 
@@ -91,5 +92,21 @@ public class Board {
         generatedLengths.add(tempIndexLen);
         generatedLength[generatedPositions.size() - 1] = arr[tempIndexLen];
         generatedDir[generatedPositions.size() - 1] = tempDir;
+    }
+
+    public String checkHitOrMissORSink(String inputMove) {
+        int y = (int) (inputMove.charAt(0))-65;
+        int x = Integer.parseInt(String.valueOf(inputMove.charAt(1)));
+        if (this.BoardMatrix[x][y]==1)
+            {
+                Ship thisShip = shipHashMap.get(inputMove);
+                thisShip.hitArray+=1;
+                if(thisShip.hitArray== thisShip.shipLength) {
+                    System.out.println("Ship has sunk");
+                    return "SINK";
+                }
+                return "HIT";
+            }
+        return "MISS";
     }
 }

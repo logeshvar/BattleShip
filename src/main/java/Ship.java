@@ -2,8 +2,8 @@ public class Ship {
     protected final int rowNo;
     protected final int columnNo;
     protected final int shipLength;
-    private final int shipDirection;
-    private int hitArray;
+    protected final int shipDirection;
+    protected int hitArray;
 
     Ship(int rowNo, int columnNo, int shipLength, int shipDirection){
         this.rowNo = rowNo;
