@@ -1,4 +1,4 @@
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Random;
 import java.util.Set;
@@ -7,7 +7,7 @@ public class Board {
     public static void main(String[] args) {
         int max = 10, min = 0;
 
-        int numbersNeeded = 5;
+        int shipsNeeded = 5;
         Random rng = new Random();
 
         Set<String> generatedPositions = new LinkedHashSet<>();
@@ -16,7 +16,7 @@ public class Board {
         int[] generatedLength = new int[5];
         int[] generatedDir = new int[5];
         int[] arr = new int[]{2, 3, 3, 4, 5};
-        while (!(generatedPositions.size() == numbersNeeded) ) {
+        while (!(generatedPositions.size() == shipsNeeded) ) {
             int temp = rng.nextInt(max - min) + min;
             String tempCol = String.valueOf((char) ((char) 65 + temp));
             int tempRow = rng.nextInt(max - min) + min;
@@ -39,20 +39,27 @@ public class Board {
                             generatePositions(generatedPositions, generatedLengths, generatedLength, generatedDir, arr, temp, tempCol, tempRow, tempIndexLen, tempDir, BoardMatrix);
                     }
                 }
-                //System.out.println(tempCol + "" + tempRow + "->" + arr[tempIndexLen] + "in" + tempDir);
             }
         }
-        System.out.println(generatedPositions);
-        System.out.println(Arrays.toString(generatedLength));
-        System.out.println(Arrays.toString(generatedDir));
-        System.out.println("  A B C D E F G H I J");
-        for (int row = 0; row < 10; row++) {
-            System.out.print(row+" ");
-            for (int col = 0; col < 10; col++) {
-                System.out.print(BoardMatrix[row][col]+" ");
+        HashMap<String,Ship> shipHashMap = new HashMap<>();
+        Ship[] shipArray =new Ship[5];
+        int arrayPosition=0;
+        for(String position: generatedPositions){
+            int y = (int) (position.charAt(0))-65;
+            int x = Integer.parseInt(String.valueOf(position.charAt(1)));
+            shipArray[arrayPosition] = new Ship(x,y,generatedLength[arrayPosition],generatedDir[arrayPosition]);
+            int dir = generatedDir[arrayPosition];
+            int rowShift, colShift;
+            if (dir==0) { rowShift = 0 ; colShift = 1; }
+            else { rowShift = 1; colShift = 0; }
+            for (int  start= 0;  start<generatedLength[arrayPosition] ; start++) {
+                String shipPosition;
+                shipPosition = ((char)(65 + y + (colShift*start))+String.valueOf(x + (rowShift*start))) ;
+                shipHashMap.put(shipPosition,shipArray[arrayPosition]);
             }
-            System.out.println();
+            arrayPosition += 1;
         }
+        System.out.println(shipHashMap);
     }
 
     private static boolean checkIfValidShipPositions(int[][] boardMatrix, int[] arr, int temp, int tempRow, int tempIndexLen, int rowShift, int colShift) {
