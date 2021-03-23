@@ -41,25 +41,30 @@ public class Board {
                 }
             }
         }
+        HashMap<String, Ship> shipHashMap = generateShipHashMap(generatedPositions, generatedLength, generatedDir);
+        System.out.println(shipHashMap);
+    }
+
+    private static HashMap<String, Ship> generateShipHashMap(Set<String> generatedPositions, int[] generatedLength, int[] generatedDir) {
         HashMap<String,Ship> shipHashMap = new HashMap<>();
         Ship[] shipArray =new Ship[5];
         int arrayPosition=0;
         for(String position: generatedPositions){
             int y = (int) (position.charAt(0))-65;
             int x = Integer.parseInt(String.valueOf(position.charAt(1)));
-            shipArray[arrayPosition] = new Ship(x,y,generatedLength[arrayPosition],generatedDir[arrayPosition]);
+            shipArray[arrayPosition] = new Ship(x,y, generatedLength[arrayPosition], generatedDir[arrayPosition]);
             int dir = generatedDir[arrayPosition];
             int rowShift, colShift;
             if (dir==0) { rowShift = 0 ; colShift = 1; }
             else { rowShift = 1; colShift = 0; }
-            for (int  start= 0;  start<generatedLength[arrayPosition] ; start++) {
+            for (int start = 0; start< generatedLength[arrayPosition] ; start++) {
                 String shipPosition;
                 shipPosition = ((char)(65 + y + (colShift*start))+String.valueOf(x + (rowShift*start))) ;
                 shipHashMap.put(shipPosition,shipArray[arrayPosition]);
             }
             arrayPosition += 1;
         }
-        System.out.println(shipHashMap);
+        return shipHashMap;
     }
 
     private static boolean checkIfValidShipPositions(int[][] boardMatrix, int[] arr, int temp, int tempRow, int tempIndexLen, int rowShift, int colShift) {
