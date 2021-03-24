@@ -2,7 +2,7 @@ import java.util.Scanner;
 
 public class Player {
     char[][] playerBoard = new char[10][10];
-    private int no_shipsink = 0;
+    private int numberOfShipSunk = 0;
     Player(){
         initialize();
     }
@@ -53,14 +53,23 @@ public class Player {
 
     private void makeMove(String inputMove, Board computerBoard) {
         String result = computerBoard.checkHitOrMissORSink(inputMove);
-        int y = (int) (inputMove.charAt(0))-65;
+        int y = (int) (inputMove.charAt(0)) - 65;
         int x = Integer.parseInt(String.valueOf(inputMove.charAt(1)));
-        //
-        if(result.equals("MISS")){
-            this.playerBoard[x][y] = 'M';
-        }
-        else if(result.equals("HIT") || result.equals("SINK")){
-            this.playerBoard[x][y] = 'H';
+
+        switch (result) {
+            case "MISS":
+                this.playerBoard[x][y] = 'M';
+                break;
+            case "HIT":
+                this.playerBoard[x][y] = 'H';
+                break;
+            case "SINK":
+                this.playerBoard[x][y] = 'H';
+                numberOfShipSunk += 1;
+                if (numberOfShipSunk == 5) {
+                    System.out.println("You have Won!");
+                }
+                break;
         }
     }
 

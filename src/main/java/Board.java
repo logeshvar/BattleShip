@@ -100,8 +100,8 @@ public class Board {
         if (this.BoardMatrix[x][y]==1)
             {
                 Ship thisShip = shipHashMap.get(inputMove);
-                thisShip.hitArray+=1;
-                if(thisShip.hitArray== thisShip.shipLength) {
+                thisShip.gotHit();
+                if(thisShip.hasSunk()) {
                     System.out.println("Ship has sunk");
                     return "SINK";
                 }

@@ -12,4 +12,12 @@ public class Ship {
         this.shipDirection = shipDirection;
         this.hitArray =0;
     }
+
+    public void gotHit() {
+        this.hitArray += 1;
+    }
+
+    public boolean hasSunk() {
+        return this.hitArray == this.shipLength;
+    }
 }
