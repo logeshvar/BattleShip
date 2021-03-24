@@ -4,28 +4,41 @@ import java.util.Random;
 import java.util.Set;
 
 public class Board {
-    HashMap<String, Ship> shipHashMap;
-    int [][] BoardMatrix = new int[10][10];
-    Board(){
-        int max = 10, min = 0;
 
-        int shipsNeeded = 5;
-        Random rng = new Random();
+    private HashMap<String, Ship> shipHashMap;
+
+    private int [][] BoardMatrix = new int[10][10];
+    private int[] shipLengthArray = new int[]{2, 3, 3, 4, 5};
+    private int max = 10, min = 0;
+    private int shipsNeeded = 5;
+
+    Board(){
+
+        Random random = new Random();
 
         Set<String> generatedPositions = new LinkedHashSet<>();
-        Set<Integer> generatedLengths = new LinkedHashSet<>();
+        Set<Integer> generatedLengthIndexes = new LinkedHashSet<>();
+
         int[] generatedLength = new int[5];
         int[] generatedDir = new int[5];
-        int[] arr = new int[]{2, 3, 3, 4, 5};
+
+
+        assignShipAtRandomPositions(random, generatedPositions, generatedLengthIndexes, generatedLength, generatedDir);
+
+        shipHashMap = generateShipHashMap(generatedPositions, generatedLength, generatedDir);
+
+    }
+
+    private void assignShipAtRandomPositions(Random random, Set<String> generatedPositions, Set<Integer> generatedLengthIndexes, int[] generatedLength, int[] generatedDir) {
         while (!(generatedPositions.size() == shipsNeeded) ) {
-            int temp = rng.nextInt(max - min) + min;
+            int temp = random.nextInt(max - min) + min;
             String tempCol = String.valueOf((char) ((char) 65 + temp));
-            int tempRow = rng.nextInt(max - min) + min;
-            int tempDir = rng.nextInt(2);
-            int tempIndexLen = rng.nextInt(arr.length);
-            if((!generatedPositions.contains(tempCol.concat(String.valueOf(tempRow)))) && (!generatedLengths.contains(tempIndexLen))) {
+            int tempRow = random.nextInt(max - min) + min;
+            int tempDir = random.nextInt(2);
+            int tempIndexLen = random.nextInt(shipLengthArray.length);
+            if((!generatedPositions.contains(tempCol.concat(String.valueOf(tempRow)))) && (!generatedLengthIndexes.contains(tempIndexLen))) {
                 //System.out.println(tempRow+" "+temp + " " + tempIndexLen +" "+tempDir);
-                if ((tempDir ==0 && temp + arr[tempIndexLen] < max) ||(tempDir==1 && tempRow + arr[tempIndexLen] < max)) {
+                if ((tempDir ==0 && temp + shipLengthArray[tempIndexLen] < max) ||(tempDir==1 && tempRow + shipLengthArray[tempIndexLen] < max)) {
                     int rowShift, colShift;
                     if (tempDir == 0) {
                         rowShift = 0;
@@ -35,15 +48,13 @@ public class Board {
                         colShift = 0;
                     }
                     if (BoardMatrix[tempRow][temp] == 0) {
-                        boolean result = checkIfValidShipPositions(BoardMatrix, arr, temp, tempRow, tempIndexLen, rowShift, colShift); //generatedPositions,generatedLengths,generatedLength,generatedDir,arr,temp, tempCol,tempRow,tempIndexLen,tempDir, BoardMatrix
+                        boolean result = checkIfValidShipPositions(BoardMatrix, shipLengthArray, temp, tempRow, tempIndexLen, rowShift, colShift); //generatedPositions,generatedLengthIndexes,generatedLength,generatedDir,shipLengthArray,temp, tempCol,tempRow,tempIndexLen,tempDir, BoardMatrix
                         if (result)
-                            generatePositions(generatedPositions, generatedLengths, generatedLength, generatedDir, arr, temp, tempCol, tempRow, tempIndexLen, tempDir, BoardMatrix);
+                            generatePositions(generatedPositions, generatedLengthIndexes, generatedLength, generatedDir, shipLengthArray, temp, tempCol, tempRow, tempIndexLen, tempDir, BoardMatrix);
                     }
                 }
             }
         }
-        shipHashMap = generateShipHashMap(generatedPositions, generatedLength, generatedDir);
-        System.out.println(shipHashMap);
     }
 
     private static HashMap<String, Ship> generateShipHashMap(Set<String> generatedPositions, int[] generatedLength, int[] generatedDir) {
