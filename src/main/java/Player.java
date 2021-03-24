@@ -2,13 +2,20 @@ import java.util.Scanner;
 
 public class Player {
     char[][] playerBoard = new char[10][10];
+    private int no_shipsink = 0;
     Player(){
+        initialize();
+    }
+
+    private void initialize() {
         for (int row = 0; row < 10; row++) {
             for (int col = 0; col <10; col++){
                 playerBoard[row][col] = ('-');
             }
         }
     }
+
+
     public static void main(String[] args) {
         Board computerBoard = new Board();
         Player player = new Player();
@@ -48,6 +55,7 @@ public class Player {
         String result = computerBoard.checkHitOrMissORSink(inputMove);
         int y = (int) (inputMove.charAt(0))-65;
         int x = Integer.parseInt(String.valueOf(inputMove.charAt(1)));
+        //
         if(result.equals("MISS")){
             this.playerBoard[x][y] = 'M';
         }
