@@ -7,12 +7,12 @@ public class Board {
 
     private HashMap<String, Ship> shipHashMap;
 
-    private int [][] BoardMatrix = new int[10][10];
-    private int[] shipLengthArray = new int[]{2, 3, 3, 4, 5};
-    private int max = 10, min = 0;
-    private int shipsNeeded = 5;
+    private int[][] BoardMatrix = new int[10][10];
+    private final int[] shipLengthArray = new int[]{2, 3, 3, 4, 5};
+    private final int max = 10, min = 0;
+    private final int shipsNeeded = 5;
 
-    Board(){
+    Board() {
 
         Random random = new Random();
 
@@ -30,27 +30,29 @@ public class Board {
     }
 
     private void assignShipAtRandomPositions(Random random, Set<String> generatedPositions, Set<Integer> generatedLengthIndexes, int[] generatedLength, int[] generatedDir) {
-        while (!(generatedPositions.size() == shipsNeeded) ) {
-            int temp = random.nextInt(max - min) + min;
-            String tempCol = String.valueOf((char) ((char) 65 + temp));
-            int tempRow = random.nextInt(max - min) + min;
-            int tempDir = random.nextInt(2);
-            int tempIndexLen = random.nextInt(shipLengthArray.length);
-            if((!generatedPositions.contains(tempCol.concat(String.valueOf(tempRow)))) && (!generatedLengthIndexes.contains(tempIndexLen))) {
-                //System.out.println(tempRow+" "+temp + " " + tempIndexLen +" "+tempDir);
-                if ((tempDir ==0 && temp + shipLengthArray[tempIndexLen] < max) ||(tempDir==1 && tempRow + shipLengthArray[tempIndexLen] < max)) {
-                    int rowShift, colShift;
-                    if (tempDir == 0) {
+
+        while (!(generatedPositions.size() == shipsNeeded)) {
+
+            int tempColumnNumber = random.nextInt(max - min) + min;
+            String tempColumn = String.valueOf((char) ((char) 65 + tempColumnNumber));
+            int tempRowNumber = random.nextInt(max - min) + min;
+            int tempDirection = random.nextInt(2);
+            int tempLengthArrayIndex = random.nextInt(shipLengthArray.length);
+
+            if ((!generatedPositions.contains(tempColumn.concat(String.valueOf(tempRowNumber)))) && (!generatedLengthIndexes.contains(tempLengthArrayIndex))) {
+
+                if ((tempDirection == 0 && tempColumnNumber + shipLengthArray[tempLengthArrayIndex] < max) || (tempDirection == 1 && tempRowNumber + shipLengthArray[tempLengthArrayIndex] < max)) {
+                    int rowShift, columnShift;
+                    if (tempDirection == 0) {
                         rowShift = 0;
-                        colShift = 1;
+                        columnShift = 1;
                     } else {
                         rowShift = 1;
-                        colShift = 0;
+                        columnShift = 0;
                     }
-                    if (BoardMatrix[tempRow][temp] == 0) {
-                        boolean result = checkIfValidShipPositions(BoardMatrix, shipLengthArray, temp, tempRow, tempIndexLen, rowShift, colShift); //generatedPositions,generatedLengthIndexes,generatedLength,generatedDir,shipLengthArray,temp, tempCol,tempRow,tempIndexLen,tempDir, BoardMatrix
-                        if (result)
-                            generatePositions(generatedPositions, generatedLengthIndexes, generatedLength, generatedDir, shipLengthArray, temp, tempCol, tempRow, tempIndexLen, tempDir, BoardMatrix);
+                    if (BoardMatrix[tempRowNumber][tempColumnNumber] == 0) {
+                        if (checkIfValidShipPositions(BoardMatrix, shipLengthArray, tempColumnNumber, tempRowNumber, tempLengthArrayIndex, rowShift, columnShift))
+                            generatePositions(generatedPositions, generatedLengthIndexes, generatedLength, generatedDir, shipLengthArray, tempColumnNumber, tempColumn, tempRowNumber, tempLengthArrayIndex, tempDirection, BoardMatrix);
                     }
                 }
             }
@@ -58,31 +60,36 @@ public class Board {
     }
 
     private static HashMap<String, Ship> generateShipHashMap(Set<String> generatedPositions, int[] generatedLength, int[] generatedDir) {
-        HashMap<String,Ship> shipHashMap = new HashMap<>();
-        Ship[] shipArray =new Ship[5];
-        int arrayPosition=0;
-        for(String position: generatedPositions){
-            int y = (int) (position.charAt(0))-65;
+        HashMap<String, Ship> shipHashMap = new HashMap<>();
+        Ship[] shipArray = new Ship[5];
+        int arrayPosition = 0;
+        for (String position : generatedPositions) {
+            int y = (int) (position.charAt(0)) - 65;
             int x = Integer.parseInt(String.valueOf(position.charAt(1)));
-            shipArray[arrayPosition] = new Ship(x,y, generatedLength[arrayPosition], generatedDir[arrayPosition]);
-            int dir = generatedDir[arrayPosition];
-            int rowShift, colShift;
-            if (dir==0) { rowShift = 0 ; colShift = 1; }
-            else { rowShift = 1; colShift = 0; }
-            for (int start = 0; start< generatedLength[arrayPosition] ; start++) {
+            shipArray[arrayPosition] = new Ship(x, y, generatedLength[arrayPosition], generatedDir[arrayPosition]);
+            int shipDirection = generatedDir[arrayPosition];
+            int rowShift, columnShift;
+            if (shipDirection == 0){
+                rowShift = 0;
+                columnShift = 1;
+            } else {
+                rowShift = 1;
+                columnShift = 0;
+            }
+            for (int start = 0; start < generatedLength[arrayPosition]; start++) {
                 String shipPosition;
-                shipPosition = ((char)(65 + y + (colShift*start))+String.valueOf(x + (rowShift*start))) ;
-                shipHashMap.put(shipPosition,shipArray[arrayPosition]);
+                shipPosition = ((char) (65 + y + (columnShift * start)) + String.valueOf(x + (rowShift * start)));
+                shipHashMap.put(shipPosition, shipArray[arrayPosition]);
             }
             arrayPosition += 1;
         }
         return shipHashMap;
     }
 
-    private static boolean checkIfValidShipPositions(int[][] boardMatrix, int[] arr, int temp, int tempRow, int tempIndexLen, int rowShift, int colShift) {
-        for (int startPos = 1; startPos < arr[tempIndexLen]; startPos++) {
-            if((tempRow + rowShift)>=0 && (tempRow + rowShift)<10 && (temp + colShift)>=0 && (temp + colShift)<10) {
-                if (boardMatrix[tempRow + (rowShift*startPos)][temp + (colShift*startPos)] == 1) {
+    private static boolean checkIfValidShipPositions(int[][] boardMatrix, int[] shipLengthArray, int tempColumnNumber, int tempRowNumber, int tempLengthArrayIndex, int rowShift, int columnShift) {
+        for (int startPosition = 1; startPosition < shipLengthArray[tempLengthArrayIndex]; startPosition++) {
+            if ((tempRowNumber + rowShift) >= 0 && (tempRowNumber + rowShift) < 10 && (tempColumnNumber + columnShift) >= 0 && (tempColumnNumber + columnShift) < 10) {
+                if (boardMatrix[tempRowNumber + (rowShift * startPosition)][tempColumnNumber + (columnShift * startPosition)] == 1) {
                     return false;
                 }
             }
@@ -90,34 +97,38 @@ public class Board {
         return true;
     }
 
-    private static void generatePositions(Set<String> generatedPositions, Set<Integer> generatedLengths, int[] generatedLength, int[] generatedDir, int[] arr, int temp, String tempCol, int tempRow, int tempIndexLen, int tempDir, int[][] BoardMatrix) {
-        int rowShift, colShift;
-        if (tempDir==0) { rowShift = 0 ; colShift = 1; }
-        else { rowShift = 1; colShift = 0; }
-        BoardMatrix[tempRow][temp] = 1;
-        for (int start = 1; start < arr[tempIndexLen]; start++) {
-            // System.out.println(start+" "+tempRow+" "+temp+" "+rowShift+" "+colShift);
-            BoardMatrix[tempRow+(rowShift*start)][temp + (colShift*start)] = 1;
+    private static void generatePositions(Set<String> generatedPositions, Set<Integer> generatedLengthIndexes, int[] generatedLength, int[] generatedDir, int[] shipLengthArray, int tempColumnNumber, String tempColumn, int tempRowNumber, int tempLengthArrayIndex, int tempDirection, int[][] BoardMatrix) {
+        int rowShift, columnShift;
+        if (tempDirection == 0) {
+            rowShift = 0;
+            columnShift = 1;
+        } else {
+            rowShift = 1;
+            columnShift = 0;
         }
-        generatedPositions.add(tempCol.concat(String.valueOf(tempRow)));
-        generatedLengths.add(tempIndexLen);
-        generatedLength[generatedPositions.size() - 1] = arr[tempIndexLen];
-        generatedDir[generatedPositions.size() - 1] = tempDir;
+        BoardMatrix[tempRowNumber][tempColumnNumber] = 1;
+        for (int start = 1; start < shipLengthArray[tempLengthArrayIndex]; start++) {
+
+            BoardMatrix[tempRowNumber + (rowShift * start)][tempColumnNumber + (columnShift * start)] = 1;
+        }
+        generatedPositions.add(tempColumn.concat(String.valueOf(tempRowNumber)));
+        generatedLengthIndexes.add(tempLengthArrayIndex);
+        generatedLength[generatedPositions.size() - 1] = shipLengthArray[tempLengthArrayIndex];
+        generatedDir[generatedPositions.size() - 1] = tempDirection;
     }
 
     public String checkHitOrMissORSink(String inputMove) {
-        int y = (int) (inputMove.charAt(0))-65;
+        int y = (int) (inputMove.charAt(0)) - 65;
         int x = Integer.parseInt(String.valueOf(inputMove.charAt(1)));
-        if (this.BoardMatrix[x][y]==1)
-            {
-                Ship thisShip = shipHashMap.get(inputMove);
-                thisShip.gotHit();
-                if(thisShip.hasSunk()) {
-                    System.out.println("Ship has sunk");
-                    return "SINK";
-                }
-                return "HIT";
+        if (this.BoardMatrix[x][y] == 1) {
+            Ship thisShip = shipHashMap.get(inputMove);
+            thisShip.gotHit();
+            if (thisShip.hasSunk()) {
+                System.out.println("Ship has sunk");
+                return "SINK";
             }
+            return "HIT";
+        }
         return "MISS";
     }
 }
