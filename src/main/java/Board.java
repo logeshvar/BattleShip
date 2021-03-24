@@ -5,15 +5,18 @@ import java.util.Set;
 
 public class Board {
 
-    private HashMap<String, Ship> shipHashMap;
+    private final HashMap<String, Ship> shipHashMap;
 
-    private int[][] BoardMatrix = new int[10][10];
+    private final int[][] BoardMatrix;
     private final int[] shipLengthArray = new int[]{2, 3, 3, 4, 5};
-    private final int max = 10, min = 0;
-    private final int shipsNeeded = 5;
+    private final int max , min;
+    private final int shipsNeeded;
 
     Board() {
-
+        min = 0;
+        max = 10;
+        shipsNeeded = 5;
+        BoardMatrix = new int[10][10];
         Random random = new Random();
 
         Set<String> generatedPositions = new LinkedHashSet<>();
@@ -83,6 +86,7 @@ public class Board {
             }
             arrayPosition += 1;
         }
+        System.out.println(shipHashMap);
         return shipHashMap;
     }
 

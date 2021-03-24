@@ -3,6 +3,7 @@ import java.util.Scanner;
 public class Player {
     char[][] playerBoard = new char[10][10];
     private int numberOfShipSunk = 0;
+    int flag = 0;
     Player(){
         initialize();
     }
@@ -27,7 +28,13 @@ public class Player {
             if (input==1){
                 System.out.print("Enter your position guess:");
                 String inputMove = sc.next();
+                inputMove= Character.toString(Character.toUpperCase(inputMove.charAt(0)))+Character.toString(inputMove.charAt(1));
+                System.out.println(inputMove);
                 player.makeMove(inputMove,computerBoard);
+                if(player.flag == 1){
+                    player.printBoard();
+                    break;
+                }
                 player.printBoard();
             }
             else if(input==2){
@@ -68,6 +75,7 @@ public class Player {
                 numberOfShipSunk += 1;
                 if (numberOfShipSunk == 5) {
                     System.out.println("You have Won!");
+                    this.flag = 1;
                 }
                 break;
         }
