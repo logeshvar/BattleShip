@@ -3,7 +3,7 @@ import java.util.LinkedHashSet;
 import java.util.Random;
 import java.util.Set;
 
-public class Board {
+public class ComputerBoard {
 
     private final HashMap<String, Ship> shipHashMap;
 
@@ -12,7 +12,7 @@ public class Board {
     private final int max , min;
     private final int shipsNeeded;
 
-    Board() {
+    ComputerBoard() {
         min = 0;
         max = 10;
         shipsNeeded = 5;
