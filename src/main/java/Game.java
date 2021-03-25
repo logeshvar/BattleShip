@@ -1,25 +1,19 @@
 import java.util.Scanner;
 
-public class PlayerBoard {
-    char[][] playerBoard = new char[10][10];
+public class Game {
+    Player player;
+    Computer computer;
     private int numberOfShipSunk = 0;
     int flag = 0;
-    PlayerBoard(){
-        initialize();
-    }
 
-    private void initialize() {
-        for (int row = 0; row < 10; row++) {
-            for (int col = 0; col <10; col++){
-                playerBoard[row][col] = ('-');
-            }
-        }
+    public Game() {
+        computer = new Computer(10);
+        player = new Player(10);
     }
 
 
     public static void main(String[] args) throws InvalidInputMoveException {
-        ComputerBoard computerBoard = new ComputerBoard();
-        PlayerBoard playerBoard = new PlayerBoard();
+        Game game = new Game();
         while(true){
             System.out.println("1.Make a move\n2.Print Board\n3.Quit");
             System.out.print("Enter:");
@@ -30,15 +24,15 @@ public class PlayerBoard {
                 String inputMove = sc.next();
                 checkValidInput(inputMove);
                 inputMove= Character.toString(Character.toUpperCase(inputMove.charAt(0)))+ inputMove.charAt(1);
-                playerBoard.makeMove(inputMove,computerBoard);
-                if(playerBoard.flag == 1){
-                    playerBoard.printBoard();
+                game.makeMove(inputMove,game.computer);
+                if(game.flag == 1){
+                    game.player.printBoard(game.player.board);
                     break;
                 }
-                playerBoard.printBoard();
+                game.player.printBoard(game.player.board);
             }
             else if(input==2){
-                playerBoard.printBoard();
+                game.player.printBoard(game.player.board);
             }
             else if(input==3){
                 break;
@@ -60,39 +54,41 @@ public class PlayerBoard {
             throw new InvalidInputMoveException("Enter the valid row number");
         }
     }
-
-    private void printBoard() {
-        System.out.println("  A B C D E F G H I J");
-        for (int row = 0; row < 10; row++) {
-            System.out.print(row+" ");
-            for (int column = 0; column < 10; column++) {
-                System.out.print(this.playerBoard[row][column]+" ");
-            }
-            System.out.println();
-        }
-    }
-
-    private void makeMove(String inputMove, ComputerBoard computerBoard) {
-        String result = computerBoard.checkHitOrMissORSink(inputMove);
+    private void makeMove(String inputMove, Computer computer) {
+        String result = this.checkHitOrMissORSink(inputMove,computer);
         int y = (int) (inputMove.charAt(0)) - 65;
         int x = Integer.parseInt(String.valueOf(inputMove.charAt(1)));
-
         switch (result) {
             case "MISS":
-                this.playerBoard[x][y] = 'M';
+                player.board.boardMatrix[x][y] = 'M';
                 break;
             case "HIT":
-                this.playerBoard[x][y] = 'H';
+                player.board.boardMatrix[x][y] = 'H';
                 break;
             case "SINK":
-                this.playerBoard[x][y] = 'H';
+                player.board.boardMatrix[x][y] = 'H';
                 numberOfShipSunk += 1;
                 if (numberOfShipSunk == 5) {
                     System.out.println("You have Won!");
-                    this.flag = 1;
+                    //this.flag = 1;
                 }
                 break;
         }
     }
+    public String checkHitOrMissORSink(String inputMove,Computer computer) {
+        int y = (int) (inputMove.charAt(0)) - 65;
+        int x = Integer.parseInt(String.valueOf(inputMove.charAt(1)));
+        if (computer.board.boardMatrix[x][y] == 1) {
+            Ship thisShip = computer.getShip(inputMove);
+            thisShip.gotHit();
+            if (thisShip.hasSunk()) {
+                System.out.println("Ship has sunk");
+                return "SINK";
+            }
+            return "HIT";
+        }
+        return "MISS";
+    }
+
 
 }

@@ -3,20 +3,20 @@ import java.util.LinkedHashSet;
 import java.util.Random;
 import java.util.Set;
 
-public class ComputerBoard {
+public class Computer {
 
     private  HashMap<String, Ship> shipHashMap;
 
-    protected final int[][] BoardMatrix;
     private final int[] shipLengthArray = new int[]{2, 3, 3, 4, 5};
     private final int max , min;
     private final int shipsNeeded;
+    Board board;
 
-    protected ComputerBoard() {
+     Computer(int size) {
+        board = new Board(size);
         min = 0;
-        max = 10;
+        max = size;
         shipsNeeded = 5;
-        BoardMatrix = new int[10][10];
 
         Set<String> generatedPositions = new LinkedHashSet<>();
         Set<Integer> generatedLengthIndexes = new LinkedHashSet<>();
@@ -25,19 +25,12 @@ public class ComputerBoard {
         int[] generatedDir = new int[5];
 
 
-        assignShipAtRandomPositions(generatedPositions, generatedLengthIndexes, generatedLength, generatedDir);
-        System.out.println(generatedPositions);
-        for (int i = 0; i < generatedLength.length; i++) {
-            System.out.print(generatedLength[i] + " ");
-        }
-        System.out.println();
-        for (int i = 0; i < generatedDir.length; i++) {
-            System.out.print(generatedDir[i]);
-        }
+        assignShipAtRandomPositions(board,generatedPositions, generatedLengthIndexes, generatedLength, generatedDir);
+        shipHashMap = generateShipHashMap( generatedPositions, generatedLength, generatedDir);
 
     }
 
-    protected void assignShipAtRandomPositions(Set<String> generatedPositions, Set<Integer> generatedLengthIndexes, int[] generatedLength, int[] generatedDir) {
+    private void assignShipAtRandomPositions(Board board,Set<String> generatedPositions, Set<Integer> generatedLengthIndexes, int[] generatedLength, int[] generatedDir) {
         Random random = new Random();
         while (!(generatedPositions.size() == shipsNeeded)) {
 
@@ -58,9 +51,9 @@ public class ComputerBoard {
                         rowShift = 1;
                         columnShift = 0;
                     }
-                    if (this.BoardMatrix[tempRowNumber][tempColumnNumber] == 0) {
-                        if (checkIfValidShipPositions(this.BoardMatrix, shipLengthArray, tempColumnNumber, tempRowNumber, tempLengthArrayIndex, rowShift, columnShift))
-                            generatePositions(generatedPositions, generatedLengthIndexes, generatedLength, generatedDir, shipLengthArray, tempColumnNumber, tempColumn, tempRowNumber, tempLengthArrayIndex, tempDirection, BoardMatrix);
+                    if (board.boardMatrix[tempRowNumber][tempColumnNumber] == '-') {
+                        if (checkIfValidShipPositions(board, shipLengthArray, tempColumnNumber, tempRowNumber, tempLengthArrayIndex, rowShift, columnShift))
+                            generatePositions(generatedPositions, generatedLengthIndexes, generatedLength, generatedDir, shipLengthArray, tempColumnNumber, tempColumn, tempRowNumber, tempLengthArrayIndex, tempDirection, board);
                     }
                 }
             }
@@ -96,10 +89,10 @@ public class ComputerBoard {
         return shipHashMap;
     }
 
-    private boolean checkIfValidShipPositions(int[][] boardMatrix, int[] shipLengthArray, int tempColumnNumber, int tempRowNumber, int tempLengthArrayIndex, int rowShift, int columnShift) {
+    private boolean checkIfValidShipPositions(Board board, int[] shipLengthArray, int tempColumnNumber, int tempRowNumber, int tempLengthArrayIndex, int rowShift, int columnShift) {
         for (int startPosition = 1; startPosition < shipLengthArray[tempLengthArrayIndex]; startPosition++) {
             if ((tempRowNumber + rowShift) >= 0 && (tempRowNumber + rowShift) < 10 && (tempColumnNumber + columnShift) >= 0 && (tempColumnNumber + columnShift) < 10) {
-                if (boardMatrix[tempRowNumber + (rowShift * startPosition)][tempColumnNumber + (columnShift * startPosition)] == 1) {
+                if (board.boardMatrix[tempRowNumber + (rowShift * startPosition)][tempColumnNumber + (columnShift * startPosition)] == 's') {
                     return false;
                 }
             }
@@ -107,7 +100,7 @@ public class ComputerBoard {
         return true;
     }
 
-    private void generatePositions(Set<String> generatedPositions, Set<Integer> generatedLengthIndexes, int[] generatedLength, int[] generatedDir, int[] shipLengthArray, int tempColumnNumber, String tempColumn, int tempRowNumber, int tempLengthArrayIndex, int tempDirection, int[][] BoardMatrix) {
+    private void generatePositions(Set<String> generatedPositions, Set<Integer> generatedLengthIndexes, int[] generatedLength, int[] generatedDir, int[] shipLengthArray, int tempColumnNumber, String tempColumn, int tempRowNumber, int tempLengthArrayIndex, int tempDirection, Board board) {
         int rowShift, columnShift;
         if (tempDirection == 0) {
             rowShift = 0;
@@ -116,10 +109,10 @@ public class ComputerBoard {
             rowShift = 1;
             columnShift = 0;
         }
-        this.BoardMatrix[tempRowNumber][tempColumnNumber] = 1;
+        board.boardMatrix[tempRowNumber][tempColumnNumber] = 's';
         for (int start = 1; start < shipLengthArray[tempLengthArrayIndex]; start++) {
 
-            this.BoardMatrix[tempRowNumber + (rowShift * start)][tempColumnNumber + (columnShift * start)] = 1;
+            board.boardMatrix[tempRowNumber + (rowShift * start)][tempColumnNumber + (columnShift * start)] = 's';
         }
         generatedPositions.add(tempColumn.concat(String.valueOf(tempRowNumber)));
         generatedLengthIndexes.add(tempLengthArrayIndex);
@@ -127,18 +120,8 @@ public class ComputerBoard {
         generatedDir[generatedPositions.size() - 1] = tempDirection;
     }
 
-    public String checkHitOrMissORSink(String inputMove) {
-        int y = (int) (inputMove.charAt(0)) - 65;
-        int x = Integer.parseInt(String.valueOf(inputMove.charAt(1)));
-        if (this.BoardMatrix[x][y] == 1) {
-            Ship thisShip = shipHashMap.get(inputMove);
-            thisShip.gotHit();
-            if (thisShip.hasSunk()) {
-                System.out.println("Ship has sunk");
-                return "SINK";
-            }
-            return "HIT";
-        }
-        return "MISS";
+
+    public Ship getShip(String inputMove) {
+         return this.shipHashMap.get(inputMove);
     }
 }
