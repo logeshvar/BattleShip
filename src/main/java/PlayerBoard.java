@@ -17,7 +17,7 @@ public class PlayerBoard {
     }
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InvalidInputMoveException {
         ComputerBoard computerBoard = new ComputerBoard();
         PlayerBoard playerBoard = new PlayerBoard();
         while(true){
@@ -28,8 +28,8 @@ public class PlayerBoard {
             if (input==1){
                 System.out.print("Enter your position guess:");
                 String inputMove = sc.next();
+                checkValidInput(inputMove);
                 inputMove= Character.toString(Character.toUpperCase(inputMove.charAt(0)))+ inputMove.charAt(1);
-                System.out.println(inputMove);
                 playerBoard.makeMove(inputMove,computerBoard);
                 if(playerBoard.flag == 1){
                     playerBoard.printBoard();
@@ -46,6 +46,18 @@ public class PlayerBoard {
             else{
                 System.out.println("Enter a valid option!!");
             }
+        }
+    }
+
+    private static void checkValidInput(String inputMove) throws InvalidInputMoveException {
+        if(inputMove.length() != 2){
+            throw new InvalidInputMoveException("Enter valid input move of length two");
+        }
+        else if(!(((int) inputMove.charAt(0)>= 65 && (int) inputMove.charAt(0)<=74) || ((int) inputMove.charAt(0)>= 97 && (int) inputMove.charAt(0)<=106))){
+            throw new InvalidInputMoveException("Enter the valid column");
+        }
+        else if(!((int) inputMove.charAt(1)>=48 && (int) inputMove.charAt(1)<=57)){
+            throw new InvalidInputMoveException("Enter the valid row number");
         }
     }
 

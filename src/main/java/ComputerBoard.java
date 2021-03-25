@@ -5,19 +5,18 @@ import java.util.Set;
 
 public class ComputerBoard {
 
-    private final HashMap<String, Ship> shipHashMap;
+    private  HashMap<String, Ship> shipHashMap;
 
-    private final int[][] BoardMatrix;
+    protected final int[][] BoardMatrix;
     private final int[] shipLengthArray = new int[]{2, 3, 3, 4, 5};
     private final int max , min;
     private final int shipsNeeded;
 
-    ComputerBoard() {
+    protected ComputerBoard() {
         min = 0;
         max = 10;
         shipsNeeded = 5;
         BoardMatrix = new int[10][10];
-        Random random = new Random();
 
         Set<String> generatedPositions = new LinkedHashSet<>();
         Set<Integer> generatedLengthIndexes = new LinkedHashSet<>();
@@ -26,14 +25,20 @@ public class ComputerBoard {
         int[] generatedDir = new int[5];
 
 
-        assignShipAtRandomPositions(random, generatedPositions, generatedLengthIndexes, generatedLength, generatedDir);
-
-        shipHashMap = generateShipHashMap(generatedPositions, generatedLength, generatedDir);
+        assignShipAtRandomPositions(generatedPositions, generatedLengthIndexes, generatedLength, generatedDir);
+        System.out.println(generatedPositions);
+        for (int i = 0; i < generatedLength.length; i++) {
+            System.out.print(generatedLength[i] + " ");
+        }
+        System.out.println();
+        for (int i = 0; i < generatedDir.length; i++) {
+            System.out.print(generatedDir[i]);
+        }
 
     }
 
-    private void assignShipAtRandomPositions(Random random, Set<String> generatedPositions, Set<Integer> generatedLengthIndexes, int[] generatedLength, int[] generatedDir) {
-
+    protected void assignShipAtRandomPositions(Set<String> generatedPositions, Set<Integer> generatedLengthIndexes, int[] generatedLength, int[] generatedDir) {
+        Random random = new Random();
         while (!(generatedPositions.size() == shipsNeeded)) {
 
             int tempColumnNumber = random.nextInt(max - min) + min;
@@ -53,13 +58,14 @@ public class ComputerBoard {
                         rowShift = 1;
                         columnShift = 0;
                     }
-                    if (BoardMatrix[tempRowNumber][tempColumnNumber] == 0) {
-                        if (checkIfValidShipPositions(BoardMatrix, shipLengthArray, tempColumnNumber, tempRowNumber, tempLengthArrayIndex, rowShift, columnShift))
+                    if (this.BoardMatrix[tempRowNumber][tempColumnNumber] == 0) {
+                        if (checkIfValidShipPositions(this.BoardMatrix, shipLengthArray, tempColumnNumber, tempRowNumber, tempLengthArrayIndex, rowShift, columnShift))
                             generatePositions(generatedPositions, generatedLengthIndexes, generatedLength, generatedDir, shipLengthArray, tempColumnNumber, tempColumn, tempRowNumber, tempLengthArrayIndex, tempDirection, BoardMatrix);
                     }
                 }
             }
         }
+        shipHashMap = generateShipHashMap(generatedPositions, generatedLength, generatedDir);
     }
 
     private static HashMap<String, Ship> generateShipHashMap(Set<String> generatedPositions, int[] generatedLength, int[] generatedDir) {
@@ -90,7 +96,7 @@ public class ComputerBoard {
         return shipHashMap;
     }
 
-    private static boolean checkIfValidShipPositions(int[][] boardMatrix, int[] shipLengthArray, int tempColumnNumber, int tempRowNumber, int tempLengthArrayIndex, int rowShift, int columnShift) {
+    private boolean checkIfValidShipPositions(int[][] boardMatrix, int[] shipLengthArray, int tempColumnNumber, int tempRowNumber, int tempLengthArrayIndex, int rowShift, int columnShift) {
         for (int startPosition = 1; startPosition < shipLengthArray[tempLengthArrayIndex]; startPosition++) {
             if ((tempRowNumber + rowShift) >= 0 && (tempRowNumber + rowShift) < 10 && (tempColumnNumber + columnShift) >= 0 && (tempColumnNumber + columnShift) < 10) {
                 if (boardMatrix[tempRowNumber + (rowShift * startPosition)][tempColumnNumber + (columnShift * startPosition)] == 1) {
@@ -101,7 +107,7 @@ public class ComputerBoard {
         return true;
     }
 
-    private static void generatePositions(Set<String> generatedPositions, Set<Integer> generatedLengthIndexes, int[] generatedLength, int[] generatedDir, int[] shipLengthArray, int tempColumnNumber, String tempColumn, int tempRowNumber, int tempLengthArrayIndex, int tempDirection, int[][] BoardMatrix) {
+    private void generatePositions(Set<String> generatedPositions, Set<Integer> generatedLengthIndexes, int[] generatedLength, int[] generatedDir, int[] shipLengthArray, int tempColumnNumber, String tempColumn, int tempRowNumber, int tempLengthArrayIndex, int tempDirection, int[][] BoardMatrix) {
         int rowShift, columnShift;
         if (tempDirection == 0) {
             rowShift = 0;
@@ -110,10 +116,10 @@ public class ComputerBoard {
             rowShift = 1;
             columnShift = 0;
         }
-        BoardMatrix[tempRowNumber][tempColumnNumber] = 1;
+        this.BoardMatrix[tempRowNumber][tempColumnNumber] = 1;
         for (int start = 1; start < shipLengthArray[tempLengthArrayIndex]; start++) {
 
-            BoardMatrix[tempRowNumber + (rowShift * start)][tempColumnNumber + (columnShift * start)] = 1;
+            this.BoardMatrix[tempRowNumber + (rowShift * start)][tempColumnNumber + (columnShift * start)] = 1;
         }
         generatedPositions.add(tempColumn.concat(String.valueOf(tempRowNumber)));
         generatedLengthIndexes.add(tempLengthArrayIndex);
