@@ -26,15 +26,16 @@ public class Game {
                 inputMove= Character.toString(Character.toUpperCase(inputMove.charAt(0)))+ inputMove.charAt(1);
                 game.makeMove(inputMove,game.computer);
                 if(game.flag == 1){
-                    game.player.printBoard(game.player.board);
+                    game.player.board.printBoard();
                     break;
                 }
-                game.player.printBoard(game.player.board);
+                game.player.board.printBoard();
             }
             else if(input==2){
-                game.player.printBoard(game.player.board);
+                game.player.board.printBoard();
             }
             else if(input==3){
+                System.out.println("Computer has won!");
                 break;
             }
             else{
@@ -70,7 +71,7 @@ public class Game {
                 numberOfShipSunk += 1;
                 if (numberOfShipSunk == 5) {
                     System.out.println("You have Won!");
-                    //this.flag = 1;
+                    this.flag = 1;
                 }
                 break;
         }

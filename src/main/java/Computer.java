@@ -14,6 +14,7 @@ public class Computer {
 
      Computer(int size) {
         board = new Board(size);
+        board.initialize();
         min = 0;
         max = size;
         shipsNeeded = 5;
@@ -85,7 +86,6 @@ public class Computer {
             }
             arrayPosition += 1;
         }
-        System.out.println(shipHashMap);
         return shipHashMap;
     }
 
