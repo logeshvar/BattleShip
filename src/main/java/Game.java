@@ -70,7 +70,7 @@ public class Game {
     public String checkHitOrMissORSink(String inputMove,Computer computer) {
         int y = (int) (inputMove.charAt(0)) - 65;
         int x = Integer.parseInt(String.valueOf(inputMove.charAt(1)));
-        if (computer.board.boardMatrix[x][y] == 1) {
+        if (computer.board.boardMatrix[x][y] == 's') {
             Ship thisShip = computer.getShip(inputMove);
             thisShip.gotHit();
             if (thisShip.hasSunk()) {

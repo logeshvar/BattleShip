@@ -10,6 +10,7 @@ public class Computer {
     private final int[] shipLengthArray = new int[]{2, 3, 3, 4, 5};
     private final int max , min;
     private final int shipsNeeded;
+    private final Set<String> generatedPositions;
     Board board;
 
      Computer(Board board) {
@@ -19,7 +20,7 @@ public class Computer {
         max = board.boardSize;
         shipsNeeded = 5;
 
-        Set<String> generatedPositions = new LinkedHashSet<>();
+        generatedPositions = new LinkedHashSet<>();
         Set<Integer> generatedLengthIndexes = new LinkedHashSet<>();
 
         int[] generatedLength = new int[5];
@@ -123,5 +124,9 @@ public class Computer {
 
     public Ship getShip(String inputMove) {
          return this.shipHashMap.get(inputMove);
+    }
+
+    public int getGeneratedPositionsSize() {
+        return generatedPositions.size();
     }
 }
