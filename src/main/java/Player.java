@@ -5,8 +5,8 @@ public class Player {
     Board board;
 
 
-    Player(int size) {
-        board = new Board(10);
+    Player(Board board) {
+        this.board = board;
         board.initialize();
     }
 

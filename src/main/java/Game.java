@@ -6,14 +6,16 @@ public class Game {
     private int numberOfShipSunk = 0;
     int flag = 0;
 
-    public Game() {
-        computer = new Computer(10);
-        player = new Player(10);
+    public Game(int size) {
+        Board computerBoard = new Board(size);
+        Board playerBoard = new Board(size);
+        computer = new Computer(computerBoard);
+        player = new Player(playerBoard);
     }
 
 
     public static void main(String[] args) throws InvalidInputMoveException {
-        Game game = new Game();
+        Game game = new Game(10);
         while(true){
             System.out.println("1.Make a move\n2.Print Board\n3.Quit");
             System.out.print("Enter:");

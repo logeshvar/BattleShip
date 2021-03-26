@@ -12,11 +12,11 @@ public class Computer {
     private final int shipsNeeded;
     Board board;
 
-     Computer(int size) {
-        board = new Board(size);
+     Computer(Board board) {
+        this.board = board;
         board.initialize();
         min = 0;
-        max = size;
+        max = board.boardSize;
         shipsNeeded = 5;
 
         Set<String> generatedPositions = new LinkedHashSet<>();
