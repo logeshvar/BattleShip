@@ -16,8 +16,8 @@ public class Computer {
      Computer(Board board) {
         this.board = board;
         board.initialize();
-        min = 0;
-        max = board.boardSize;
+        this.min = 0;
+        this.max = board.boardSize;
         shipsNeeded = 5;
 
         generatedPositions = new LinkedHashSet<>();
@@ -36,23 +36,19 @@ public class Computer {
         Random random = new Random();
         while (!(generatedPositions.size() == shipsNeeded)) {
 
-            int tempColumnNumber = random.nextInt(max - min) + min;
+            int tempColumnNumber = random.nextInt(this.max - this.min) + this.min;
             String tempColumn = String.valueOf((char) ((char) 65 + tempColumnNumber));
-            int tempRowNumber = random.nextInt(max - min) + min;
+            int tempRowNumber = random.nextInt(this.max - this.min) + this.min;
             int tempDirection = random.nextInt(2);
             int tempLengthArrayIndex = random.nextInt(shipLengthArray.length);
 
             if ((!generatedPositions.contains(tempColumn.concat(String.valueOf(tempRowNumber)))) && (!generatedLengthIndexes.contains(tempLengthArrayIndex))) {
 
-                if ((tempDirection == 0 && tempColumnNumber + shipLengthArray[tempLengthArrayIndex] < max) || (tempDirection == 1 && tempRowNumber + shipLengthArray[tempLengthArrayIndex] < max)) {
+                if ((tempDirection == 0 && tempColumnNumber + shipLengthArray[tempLengthArrayIndex] < this.max) || (tempDirection == 1 && tempRowNumber + shipLengthArray[tempLengthArrayIndex] < this.max)) {
                     int rowShift, columnShift;
-                    if (tempDirection == 0) {
-                        rowShift = 0;
-                        columnShift = 1;
-                    } else {
-                        rowShift = 1;
-                        columnShift = 0;
-                    }
+                    int[] shiftValues = getShiftValues(tempDirection);
+                    rowShift = shiftValues[0];
+                    columnShift = shiftValues[1];
                     if (board.boardMatrix[tempRowNumber][tempColumnNumber] == '-') {
                         if (checkIfValidShipPositions(board, shipLengthArray, tempColumnNumber, tempRowNumber, tempLengthArrayIndex, rowShift, columnShift))
                             generatePositions(generatedPositions, generatedLengthIndexes, generatedLength, generatedDir, shipLengthArray, tempColumnNumber, tempColumn, tempRowNumber, tempLengthArrayIndex, tempDirection, board);
@@ -62,7 +58,17 @@ public class Computer {
         }
     }
 
-    private static HashMap<String, Ship> generateShipHashMap(Set<String> generatedPositions, int[] generatedLength, int[] generatedDir) {
+    private int[] getShiftValues(int tempDirection) {
+         int[] shiftValues = new int[2];
+        if (tempDirection == 0) {
+            shiftValues[1] = 1;
+        } else {
+            shiftValues[0] = 1;
+        }
+        return shiftValues;
+    }
+
+    private HashMap<String, Ship> generateShipHashMap(Set<String> generatedPositions, int[] generatedLength, int[] generatedDir) {
         HashMap<String, Ship> shipHashMap = new HashMap<>();
         Ship[] shipArray = new Ship[5];
         int arrayPosition = 0;
@@ -72,13 +78,9 @@ public class Computer {
             shipArray[arrayPosition] = new Ship(x, y, generatedLength[arrayPosition], generatedDir[arrayPosition]);
             int shipDirection = generatedDir[arrayPosition];
             int rowShift, columnShift;
-            if (shipDirection == 0){
-                rowShift = 0;
-                columnShift = 1;
-            } else {
-                rowShift = 1;
-                columnShift = 0;
-            }
+            int[] shiftValues = getShiftValues(shipDirection);
+            rowShift = shiftValues[0];
+            columnShift = shiftValues[1];
             for (int start = 0; start < generatedLength[arrayPosition]; start++) {
                 String shipPosition;
                 shipPosition = ((char) (65 + y + (columnShift * start)) + String.valueOf(x + (rowShift * start)));
@@ -90,9 +92,9 @@ public class Computer {
     }
 
     private boolean checkIfValidShipPositions(Board board, int[] shipLengthArray, int tempColumnNumber, int tempRowNumber, int tempLengthArrayIndex, int rowShift, int columnShift) {
-        for (int startPosition = 1; startPosition < shipLengthArray[tempLengthArrayIndex]; startPosition++) {
-            if ((tempRowNumber + rowShift) >= 0 && (tempRowNumber + rowShift) < 10 && (tempColumnNumber + columnShift) >= 0 && (tempColumnNumber + columnShift) < 10) {
-                if (board.boardMatrix[tempRowNumber + (rowShift * startPosition)][tempColumnNumber + (columnShift * startPosition)] == 's') {
+        for (int position = 1; position < shipLengthArray[tempLengthArrayIndex]; position++) {
+            if ((tempRowNumber + rowShift) >= 0 && (tempRowNumber + rowShift) < this.max && (tempColumnNumber + columnShift) >= 0 && (tempColumnNumber + columnShift) < this.max) {
+                if (board.boardMatrix[tempRowNumber + (rowShift * position)][tempColumnNumber + (columnShift * position)] == 's') {
                     return false;
                 }
             }
@@ -102,13 +104,9 @@ public class Computer {
 
     private void generatePositions(Set<String> generatedPositions, Set<Integer> generatedLengthIndexes, int[] generatedLength, int[] generatedDir, int[] shipLengthArray, int tempColumnNumber, String tempColumn, int tempRowNumber, int tempLengthArrayIndex, int tempDirection, Board board) {
         int rowShift, columnShift;
-        if (tempDirection == 0) {
-            rowShift = 0;
-            columnShift = 1;
-        } else {
-            rowShift = 1;
-            columnShift = 0;
-        }
+        int[] shiftValues = getShiftValues(tempDirection);
+        rowShift = shiftValues[0];
+        columnShift = shiftValues[1];
         board.boardMatrix[tempRowNumber][tempColumnNumber] = 's';
         for (int start = 1; start < shipLengthArray[tempLengthArrayIndex]; start++) {
 
