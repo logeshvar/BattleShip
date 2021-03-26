@@ -16,6 +16,6 @@ class ShipTest {
         Ship ship = new Ship(2,2,2,1);
         ship.gotHit();
         ship.gotHit();
-        assertEquals(true,ship.hasSunk());
+        assertTrue(ship.hasSunk());
     }
 }

@@ -5,7 +5,7 @@ import java.util.Set;
 
 public class Computer {
 
-    private  HashMap<String, Ship> shipHashMap;
+    private final HashMap<String, Ship> shipHashMap;
 
     private final int[] shipLengthArray = new int[]{2, 3, 3, 4, 5};
     private final int max , min;
@@ -60,7 +60,6 @@ public class Computer {
                 }
             }
         }
-        shipHashMap = generateShipHashMap(generatedPositions, generatedLength, generatedDir);
     }
 
     private static HashMap<String, Ship> generateShipHashMap(Set<String> generatedPositions, int[] generatedLength, int[] generatedDir) {

@@ -1,10 +1,12 @@
 import java.util.Scanner;
 
 public class Game {
-    Player player;
-    Computer computer;
+    @SuppressWarnings("FieldMayBeFinal")
+    private Player player;
+    @SuppressWarnings("FieldMayBeFinal")
+    private Computer computer;
     private int numberOfShipSunk = 0;
-    int flag = 0;
+    private int flag = 0;
 
     public Game(int size) {
         Board computerBoard = new Board(size);
@@ -17,6 +19,7 @@ public class Game {
     public static void main(String[] args) throws InvalidInputMoveException {
         Game game = new Game(10);
         while(true){
+
             System.out.println("1.Make a move\n2.Print Board\n3.Quit");
             System.out.print("Enter:");
             Scanner sc = new Scanner(System.in);
@@ -27,13 +30,13 @@ public class Game {
 
                 game.makeMove(inputMove,game.computer);
                 if(game.flag == 1){
-                    game.player.board.printBoard();
+                    printPlayerBoard(game);
                     break;
                 }
-                game.player.board.printBoard();
+                printPlayerBoard(game);
             }
             else if(input==2){
-                game.player.board.printBoard();
+                printPlayerBoard(game);
             }
             else if(input==3){
                 System.out.println("Computer has won!");
@@ -43,6 +46,11 @@ public class Game {
                 System.out.println("Enter a valid option!!");
             }
         }
+    }
+
+    private static void printPlayerBoard(Game game) {
+        System.out.println("\t Number of ships sunk: " + game.numberOfShipSunk);
+        game.player.board.printBoard();
     }
 
 
@@ -67,7 +75,7 @@ public class Game {
                 break;
         }
     }
-    public String checkHitOrMissORSink(String inputMove,Computer computer) {
+    private String checkHitOrMissORSink(String inputMove,Computer computer) {
         int y = (int) (inputMove.charAt(0)) - 65;
         int x = Integer.parseInt(String.valueOf(inputMove.charAt(1)));
         if (computer.board.boardMatrix[x][y] == 's') {
