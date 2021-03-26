@@ -21,9 +21,8 @@ public class Game {
             int input= sc.nextInt();
             if (input==1){
                 System.out.print("Enter your position guess:");
-                String inputMove = sc.next();
-                checkValidInput(inputMove);
-                inputMove= Character.toString(Character.toUpperCase(inputMove.charAt(0)))+ inputMove.charAt(1);
+                String inputMove = game.player.getMove();
+
                 game.makeMove(inputMove,game.computer);
                 if(game.flag == 1){
                     game.player.board.printBoard();
@@ -44,17 +43,7 @@ public class Game {
         }
     }
 
-    private static void checkValidInput(String inputMove) throws InvalidInputMoveException {
-        if(inputMove.length() != 2){
-            throw new InvalidInputMoveException("Enter valid input move of length two");
-        }
-        else if(!(((int) inputMove.charAt(0)>= 65 && (int) inputMove.charAt(0)<=74) || ((int) inputMove.charAt(0)>= 97 && (int) inputMove.charAt(0)<=106))){
-            throw new InvalidInputMoveException("Enter the valid column");
-        }
-        else if(!((int) inputMove.charAt(1)>=48 && (int) inputMove.charAt(1)<=57)){
-            throw new InvalidInputMoveException("Enter the valid row number");
-        }
-    }
+
     private void makeMove(String inputMove, Computer computer) {
         String result = this.checkHitOrMissORSink(inputMove,computer);
         int y = (int) (inputMove.charAt(0)) - 65;
