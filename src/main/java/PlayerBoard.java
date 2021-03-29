@@ -31,13 +31,7 @@ public class PlayerBoard {
     }
 
     public boolean checkIfAlreadyAttacked(Coordinate coordinate){
-        int x = coordinate.getX();
-        int y = coordinate.getY();
-        if(this.boardMatrix[x][y] != '-'){
-            return true;
-        }
-        return false;
-
+        return this.boardMatrix[coordinate.getX()][coordinate.getY()] != '-';
     }
 
     public void updateBoard(ArrayList<Coordinate> coordinates, String hitStatus){
