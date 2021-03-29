@@ -6,7 +6,7 @@ public class Ship {
     protected final int columnNo;
     protected final int shipLength;
     protected final int  orientation;
-    private int numberOfHits;
+    protected int numberOfHits;
     private ArrayList<Coordinate> coordinatesList = null;
 
 

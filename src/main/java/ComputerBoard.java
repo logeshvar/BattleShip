@@ -42,7 +42,7 @@ public class ComputerBoard implements Board{
             Coordinate coordinate = computer.generateRandomCoordinate();
             int orientation = new Random().nextInt(orientations);
             if(this.checkValidCoordinate(coordinate, shipLengths[shipsAssigned], orientation)){
-                ships[shipsAssigned] = new Ship(shipNames[shipsAssigned],shipLengths[0],coordinate,orientation);
+                ships[shipsAssigned] = new Ship(shipNames[shipsAssigned],shipLengths[shipsAssigned],coordinate,orientation);
                 ArrayList<Coordinate> coordinatesList = this.updateBoard(coordinate,shipLengths[shipsAssigned],orientation);
                 ships[shipsAssigned].setLocation(coordinatesList);
                 shipsAssigned+=1;
@@ -88,9 +88,7 @@ public class ComputerBoard implements Board{
             int columnShift = getShiftValues(orientation)[1], rowShift = getShiftValues(orientation)[0];
             int x = coordinate.getX();
             int y = coordinate.getY();
-            //System.out.println(x+" "+y+" "+shipLength);
             for (int start = 0; start < shipLength; start++) {
-                //System.out.println(x+(rowShift*start)+" "+(y +(columnShift*start)));
                 if (this.boardMatrix[x +(rowShift*start)][y +(columnShift*start)] =='s'){
                     return false;
                 }
@@ -121,9 +119,9 @@ public class ComputerBoard implements Board{
     public ArrayList<Coordinate> checkHitOrMissOrSink(Coordinate coordinate) {
 
         for (Ship ship : ships) {
-            //System.out.println(ship);
             if (ship.getLocation().contains(coordinate)) {
                 ship.gotHit();
+                System.out.println(ship.shipName+ship.shipLength+ship.numberOfHits);
                 if (ship.hasSunk()) {
                     return ship.getLocation();
                 }
