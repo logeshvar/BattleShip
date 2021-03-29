@@ -24,10 +24,15 @@ public class Ship {
     }
 
     public boolean hasSunk() {
+        System.out.println(this.shipName + " has sunk!" );
         return this.numberOfHits == this.shipLength;
+
     }
 
     public void setLocation(ArrayList<Coordinate> coordinatesList) {
         this.coordinatesList = coordinatesList;
+    }
+    public ArrayList<Coordinate> getLocation(){
+        return this.coordinatesList;
     }
 }

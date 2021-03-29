@@ -1,20 +1,30 @@
-import java.util.Scanner;
+import java.util.ArrayList;
 
 public class Game {
-    @SuppressWarnings("FieldMayBeFinal")
-    private Player player;
-    @SuppressWarnings("FieldMayBeFinal")
-    private Computer computer;
+    private final Player player;
+    @SuppressWarnings("FieldCanBeLocal")
+    private final Computer computer;
+    ComputerBoard computerBoard;
+    PlayerBoard playerBoard;
     private int numberOfShipSunk = 0;
-    private boolean isSunk;
+    String[] shipNames;
+    int[] shipLengths;
 
     public Game(int size) {
-        String[] shipNames= new String[]{"Carrier","Battleship","Destroyer","Submarine","Patrol Boat"};
-        int[] shipLengths = new int[]{5,4,3,3,2};
+
+        shipNames= new String[]{"Carrier","Battleship","Destroyer","Submarine","Patrol Boat"};
+        shipLengths = new int[]{5,4,3,3,2};
+
         computer = new Computer(size);
-        Board computerBoard = new ComputerBoard(size,computer);
-        Board playerBoard = new Board(size);
-        player = new Player(playerBoard);
+        computerBoard = new ComputerBoard(size,computer);
+        computerBoard.initialize();
+        computerBoard.setShips(shipNames,shipLengths);
+        System.out.println(size);
+        playerBoard = new PlayerBoard(size);
+        playerBoard.initialize();
+
+        player = new Player();
+
     }
 
 
@@ -22,75 +32,51 @@ public class Game {
         Game game = new Game(10);
         while(true){
 
-            System.out.println("1.Make a move\n2.Print Board\n3.Quit");
-            System.out.print("Enter your choice:");
-            Scanner sc = new Scanner(System.in);
-            int input= sc.nextInt();
-            if (input==1){
-                System.out.print("Enter your position guess:");
-                String inputMove = game.player.getMove();
+            System.out.println("Enter Q to Quit the Game");
+            System.out.print("Enter your position guess:");
+            String inputMove = game.player.getMove();
 
-                game.makeMove(inputMove,game.computer);
-                if(game.isSunk == true){
-                    printPlayerBoard(game);
-                    break;
-                }
-                printPlayerBoard(game);
+            if(inputMove.equals("122333444455555")){
+                game.computerBoard.printBoard();
             }
-            else if(input==2){
-                printPlayerBoard(game);
-            }
-            else if(input==3){
+            else if(inputMove.equals("Q")){
                 System.out.println("Computer has won!");
                 break;
             }
-            else{
-                System.out.println("Enter a valid option!!");
-            }
-        }
-    }
+            else if(game.computerBoard.checkInvalidInputMove(inputMove)){
+                ArrayList<Coordinate> coordinateArrayList;
 
-    private static void printPlayerBoard(Game game) {
-        System.out.println("\t Number of ships sunk: " + game.numberOfShipSunk);
-        game.player.board.printBoard();
-    }
-
-
-    private void makeMove(String inputMove, Computer computer) {
-        String result = this.checkHitOrMissORSink(inputMove,computer);
-        int y = (int) (inputMove.charAt(0)) - 65;
-        int x = Integer.parseInt(String.valueOf(inputMove.charAt(1)));
-        switch (result) {
-            case "MISS":
-                player.board.boardMatrix[x][y] = 'M';
-                break;
-            case "HIT":
-                player.board.boardMatrix[x][y] = 'H';
-                break;
-            case "SINK":
-                player.board.boardMatrix[x][y] = 'H';
-                numberOfShipSunk += 1;
-                if (numberOfShipSunk == 5) {
-                    System.out.println("You have Won!");
-                    this.isSunk = true;
+                Coordinate coordinate = game.getCoordinates(inputMove);
+                System.out.println(coordinate.getX() + " " + coordinate.getY());
+                coordinateArrayList = game.computerBoard.checkHitOrMissOrSink(coordinate);
+                int coordinateArrayLength = coordinateArrayList.size();
+                if (coordinateArrayLength == 0) {
+                    ArrayList<Coordinate> coordinates = new ArrayList<>();
+                    coordinates.add(coordinate);
+                    game.playerBoard.updateBoard(coordinates, "MISS");
                 }
-                break;
-        }
-    }
-    private String checkHitOrMissORSink(String inputMove,Computer computer) {
-        int y = (int) (inputMove.charAt(0)) - 65;
-        int x = Integer.parseInt(String.valueOf(inputMove.charAt(1)));
-        if (computer.board.boardMatrix[x][y] == 's') {
-            Ship thisShip = computer.getShip(inputMove);
-            thisShip.gotHit();
-            if (thisShip.hasSunk()) {
-                System.out.println("Ship has sunk");
-                return "SINK";
-            }
-            return "HIT";
-        }
-        return "MISS";
-    }
+                else if(coordinateArrayLength == 1){
+                    game.playerBoard.updateBoard(coordinateArrayList,"HIT");
+                }
+                else{
+                   game.playerBoard.updateBoard(coordinateArrayList,"SINK");
+                   game.numberOfShipSunk += 1;
+                }
 
+                System.out.println("Number of ships sunk: " + game.numberOfShipSunk);
+                game.playerBoard.printBoard();
+
+                if(game.numberOfShipSunk == game.shipNames.length){
+                    System.out.println("You Won The Game");
+                    break;
+                }
+            }
+        }
+    }
+    private Coordinate getCoordinates(String inputMove){
+        int y = (int)(Character.toUpperCase(inputMove.charAt(0)))-65;
+        int x = Integer.parseInt(inputMove.substring(1));
+        return new Coordinate(x,y);
+    }
 
 }

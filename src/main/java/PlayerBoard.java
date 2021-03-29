@@ -3,11 +3,10 @@ import java.util.ArrayList;
 public class PlayerBoard {
     protected final char[][] boardMatrix;
     int boardSize;
-    Player player;
-    PlayerBoard(int size, Player player){
-        boardMatrix = new char[boardSize][boardSize];
+    PlayerBoard(int size){
         this.boardSize = size;
-        this.player = player;
+        boardMatrix = new char[boardSize][boardSize];
+
     }
 
     public void initialize() {
@@ -33,18 +32,20 @@ public class PlayerBoard {
     public void updateBoard(ArrayList<Coordinate> coordinates, String hitStatus){
         int x = coordinates.get(0).getX();
         int y = coordinates.get(1).getY();
-        if(hitStatus == "MISS"){
+        if(hitStatus.equals("MISS")){
             this.boardMatrix[x][y] = 'M';
         }
-        else if(hitStatus == "HIT"){
+        else if(hitStatus.equals("HIT")){
             this.boardMatrix[x][y] = 'H';
         }
         else{
-            for(int count = 0; count < coordinates.size();count++){
-                x = coordinates.get(count).getX();
-                y = coordinates.get(count).getY();
+            for (Coordinate coordinate : coordinates) {
+                x = coordinate.getX();
+                y = coordinate.getY();
                 this.boardMatrix[x][y] = 'S';
             }
         }
     }
+
+
 }

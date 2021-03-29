@@ -6,6 +6,7 @@ public class ComputerBoard implements Board{
     int boardSize;
     Computer computer;
     Ship[] ships;
+    @SuppressWarnings("FieldCanBeLocal")
     private final int orientations = 2;
     public ComputerBoard(int boardSize, Computer computer) {
         this.boardSize = boardSize;
@@ -23,7 +24,8 @@ public class ComputerBoard implements Board{
     }
 
     public void printBoard() {
-        System.out.println("  A B C D E F G H I J");
+        for(int start = 0; start<this.boardSize;start++){ System.out.print(" "+(char)(65+start)); }
+        System.out.println();
         for (int row = 0; row < this.boardSize; row++) {
             System.out.print(row + " ");
             for (int column = 0; column < this.boardSize; column++) {
@@ -34,13 +36,17 @@ public class ComputerBoard implements Board{
     }
 
     public void setShips(String[] shipNames, int[] shipLengths){
-        for(int position = 0; position <= shipNames.length; position++){
+        int shipsAssigned = 0;
+        while(shipsAssigned+1!=shipNames.length){
             Coordinate coordinate = computer.generateRandomCoordinate();
             int orientation = new Random().nextInt(orientations);
-            if(this.checkValidCoordinate(coordinate, shipLengths[position], orientation)){
-                ships[position] = new Ship(shipNames[position],shipLengths[0],coordinate,orientation);
-                ArrayList<Coordinate> coordinatesList = this.updateBoard(coordinate,shipLengths[position],orientation);
-                ships[position].setLocation(coordinatesList);
+            System.out.println(coordinate.getX()+" "+ coordinate.getY()+" "+orientation);
+            if(this.checkValidCoordinate(coordinate, shipLengths[shipsAssigned], orientation)){
+                ships[shipsAssigned] = new Ship(shipNames[shipsAssigned],shipLengths[0],coordinate,orientation);
+                ArrayList<Coordinate> coordinatesList = this.updateBoard(coordinate,shipLengths[shipsAssigned],orientation);
+                ships[shipsAssigned].setLocation(coordinatesList);
+                shipsAssigned+=1;
+                System.out.println(ships[shipsAssigned].shipName);
             }
         }
     }
@@ -58,14 +64,33 @@ public class ComputerBoard implements Board{
         }
         return coordinateList;
     }
+    public boolean checkInvalidInputMove(String inputMove) throws InvalidInputMoveException {
 
+        if(inputMove.length() > (Integer.toString(this.boardSize).length()+1) ){
+            throw new InvalidInputMoveException("Enter proper input with valid row and column");
+        }
+        int column = (int)(Character.toUpperCase(inputMove.charAt(0)))-65;
+        if(column >= this.boardSize){
+            throw new InvalidInputMoveException("Enter proper input with valid column");
+        }
+
+        int row = Integer.parseInt(inputMove.substring(1));
+
+        if(row > this.boardSize){
+            throw new InvalidInputMoveException("Enter proper input with valid row");
+        }
+        return true;
+
+    }
     private boolean checkValidCoordinate(Coordinate coordinate, int shipLength, int orientation) {
-        if(withinRowBounds(coordinate, shipLength, orientation) && withinColumnBounds(coordinate, shipLength, orientation)) {
+        if(withinRowBounds(coordinate, shipLength, orientation) || withinColumnBounds(coordinate, shipLength, orientation)) {
             int columnShift = getShiftValues(orientation)[1], rowShift = getShiftValues(orientation)[0];
             int x = coordinate.getX();
             int y = coordinate.getY();
+            System.out.println(x+" "+y+" "+shipLength);
             for (int start = 0; start < shipLength; start++) {
-                if (this.boardMatrix[x +rowShift][y +columnShift] =='s'){
+                System.out.println(x+(rowShift*start)+" "+(y +(columnShift*start)));
+                if (this.boardMatrix[x +(rowShift*start)][y +(columnShift*start)] =='s'){
                     return false;
                 }
             }
@@ -85,10 +110,27 @@ public class ComputerBoard implements Board{
     }
 
     private boolean withinRowBounds(Coordinate coordinate, int shipLength, int orientation) {
-        return orientation == 0 && (coordinate.getX() + shipLength) <= this.boardSize;
+        return orientation == 1 && (coordinate.getX() + shipLength) <= this.boardSize;
     }
 
     private boolean withinColumnBounds(Coordinate coordinate, int shipLength, int orientation) {
-        return orientation == 1 && (coordinate.getY() + shipLength) <= this.boardSize;
+        return orientation == 0 && (coordinate.getY() + shipLength) <= this.boardSize;
+    }
+
+    public ArrayList<Coordinate> checkHitOrMissOrSink(Coordinate coordinate) {
+
+        for (Ship ship : ships) {
+            //System.out.println(ship);
+            if (ship.getLocation().contains(coordinate)) {
+                ship.gotHit();
+                if (ship.hasSunk()) {
+                    return ship.getLocation();
+                }
+                ArrayList<Coordinate> coordinatesList = new ArrayList<>();
+                coordinatesList.add(coordinate);
+                return coordinatesList;
+            }
+        }
+        return null;
     }
 }
