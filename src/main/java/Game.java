@@ -43,31 +43,35 @@ public class Game {
                 System.out.println("Computer has won!");
                 break;
             }
-            else if(game.computerBoard.checkInvalidInputMove(inputMove)){
+            else if(game.computerBoard.checkValidInputMove(inputMove)){
                 ArrayList<Coordinate> coordinateArrayList;
 
                 Coordinate coordinate = game.getCoordinates(inputMove);
-                coordinateArrayList = game.computerBoard.checkHitOrMissOrSink(coordinate);
-                if (coordinateArrayList == null) {
-                    ArrayList<Coordinate> coordinates = new ArrayList<>();
-                    coordinates.add(coordinate);
-                    game.playerBoard.updateBoard(coordinates, "MISS");
-                }
-                else {
-                    int coordinateArrayLength = coordinateArrayList.size();
-                    if (coordinateArrayLength == 1) {
-                        game.playerBoard.updateBoard(coordinateArrayList, "HIT");
+                if(!game.playerBoard.checkIfAlreadyAttacked(coordinate)) {
+                    coordinateArrayList = game.computerBoard.checkHitOrMissOrSink(coordinate);
+                    if (coordinateArrayList == null) {
+                        ArrayList<Coordinate> coordinates = new ArrayList<>();
+                        coordinates.add(coordinate);
+                        game.playerBoard.updateBoard(coordinates, "MISS");
                     } else {
-                        game.playerBoard.updateBoard(coordinateArrayList, "SINK");
-                        game.numberOfShipSunk += 1;
+                        int coordinateArrayLength = coordinateArrayList.size();
+                        if (coordinateArrayLength == 1) {
+                            game.playerBoard.updateBoard(coordinateArrayList, "HIT");
+                        } else {
+                            game.playerBoard.updateBoard(coordinateArrayList, "SINK");
+                            game.numberOfShipSunk += 1;
+                        }
+                    }
+                    System.out.println("Number of ships sunk: " + game.numberOfShipSunk);
+                    game.playerBoard.printBoard();
+
+                    if (game.numberOfShipSunk == game.shipNames.length) {
+                        System.out.println("You Won The Game");
+                        break;
                     }
                 }
-                System.out.println("Number of ships sunk: " + game.numberOfShipSunk);
-                game.playerBoard.printBoard();
-
-                if(game.numberOfShipSunk == game.shipNames.length){
-                    System.out.println("You Won The Game");
-                    break;
+                else{
+                    System.out.println("Board Coordinate Already Attacked!");
                 }
             }
         }

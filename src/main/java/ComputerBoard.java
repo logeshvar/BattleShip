@@ -65,7 +65,7 @@ public class ComputerBoard implements Board{
         return coordinateList;
     }
 
-    public boolean checkInvalidInputMove(String inputMove){
+    public boolean checkValidInputMove(String inputMove){
 
         if(inputMove.length() > (Integer.toString(this.boardSize).length()+1) ){
             System.out.println("Enter proper input with valid row and column");

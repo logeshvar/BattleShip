@@ -30,9 +30,20 @@ public class PlayerBoard {
         }
     }
 
+    public boolean checkIfAlreadyAttacked(Coordinate coordinate){
+        int x = coordinate.getX();
+        int y = coordinate.getY();
+        if(this.boardMatrix[x][y] != '-'){
+            return true;
+        }
+        return false;
+
+    }
+
     public void updateBoard(ArrayList<Coordinate> coordinates, String hitStatus){
         int x = coordinates.get(0).getX();
         int y = coordinates.get(0).getY();
+
         if(hitStatus.equals("MISS")){
             this.boardMatrix[x][y] = 'M';
         }
