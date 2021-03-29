@@ -18,11 +18,11 @@ public class PlayerBoard {
     }
 
     public void printBoard() {
-        System.out.print("  ");
+        System.out.print("   ");
         for(int start = 0; start<this.boardSize;start++){ System.out.print(" "+(char)(65+start)); }
         System.out.println();
         for (int row = 0; row < this.boardSize; row++) {
-            System.out.print((row+1) + "  ");
+            System.out.printf("%3d ",(row+1));
             for (int column = 0; column < this.boardSize; column++) {
                 System.out.print(this.boardMatrix[row][column] + " ");
             }

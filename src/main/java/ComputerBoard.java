@@ -24,11 +24,11 @@ public class ComputerBoard implements Board{
     }
 
     public void printBoard() {
-        System.out.print(" ");
+        System.out.print("   ");
         for(int start = 0; start<this.boardSize;start++){ System.out.print(" "+(char)(65+start)); }
         System.out.println();
         for (int row = 0; row < this.boardSize; row++) {
-            System.out.print(row + " ");
+            System.out.printf("%3d ",(row+1));
             for (int column = 0; column < this.boardSize; column++) {
                 System.out.print(this.boardMatrix[row][column] + " ");
             }
@@ -65,20 +65,23 @@ public class ComputerBoard implements Board{
         return coordinateList;
     }
 
-    public boolean checkInvalidInputMove(String inputMove) throws InvalidInputMoveException {
+    public boolean checkInvalidInputMove(String inputMove){
 
         if(inputMove.length() > (Integer.toString(this.boardSize).length()+1) ){
-            throw new InvalidInputMoveException("Enter proper input with valid row and column");
+            System.out.println("Enter proper input with valid row and column");
+            return false;
         }
         int column = (int)(Character.toUpperCase(inputMove.charAt(0)))-65;
         if(column<0 || column >= this.boardSize){
-            throw new InvalidInputMoveException("Enter proper input with valid column");
+            System.out.println("Enter proper input with valid column");
+            return false;
         }
 
         int row = Integer.parseInt(inputMove.substring(1));
 
         if(row<1 || row > this.boardSize){
-            throw new InvalidInputMoveException("Enter proper input with valid row");
+            System.out.println("Enter proper input with valid row");
+            return false;
         }
         return true;
 
@@ -121,7 +124,6 @@ public class ComputerBoard implements Board{
         for (Ship ship : ships) {
             if (ship.getLocation().contains(coordinate)) {
                 ship.gotHit();
-                System.out.println(ship.shipName+ship.shipLength+ship.numberOfHits);
                 if (ship.hasSunk()) {
                     return ship.getLocation();
                 }

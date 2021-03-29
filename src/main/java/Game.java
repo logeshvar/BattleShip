@@ -19,7 +19,6 @@ public class Game {
         computerBoard = new ComputerBoard(size,computer);
         computerBoard.initialize();
         computerBoard.setShips(shipNames,shipLengths);
-        System.out.println(size);
         playerBoard = new PlayerBoard(size);
         playerBoard.initialize();
 
@@ -28,7 +27,7 @@ public class Game {
     }
 
 
-    public static void main(String[] args) throws InvalidInputMoveException {
+    public static void main(String[] args)  {
         Game game = new Game(10);
         game.playerBoard.printBoard();
         while(true){
@@ -40,7 +39,7 @@ public class Game {
             if(inputMove.equals("122333444455555")){
                 game.computerBoard.printBoard();
             }
-            else if(inputMove.equals("Q")){
+            else if(inputMove.equals("Q") || inputMove.equals("q")){
                 System.out.println("Computer has won!");
                 break;
             }
