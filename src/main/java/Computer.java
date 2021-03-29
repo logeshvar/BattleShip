@@ -70,7 +70,7 @@ public class Computer {
 
     private HashMap<String, Ship> generateShipHashMap(Set<String> generatedPositions, int[] generatedLength, int[] generatedDir) {
         HashMap<String, Ship> shipHashMap = new HashMap<>();
-        Ship[] shipArray = new Ship[5];
+        Ship[] shipArray = new Ship[shipsNeeded];
         int arrayPosition = 0;
         for (String position : generatedPositions) {
             int y = (int) (position.charAt(0)) - 65;

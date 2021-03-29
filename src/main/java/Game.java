@@ -6,7 +6,7 @@ public class Game {
     @SuppressWarnings("FieldMayBeFinal")
     private Computer computer;
     private int numberOfShipSunk = 0;
-    private int flag = 0;
+    private boolean isSunk;
 
     public Game(int size) {
         Board computerBoard = new Board(size);
@@ -21,7 +21,7 @@ public class Game {
         while(true){
 
             System.out.println("1.Make a move\n2.Print Board\n3.Quit");
-            System.out.print("Enter:");
+            System.out.print("Enter your choice:");
             Scanner sc = new Scanner(System.in);
             int input= sc.nextInt();
             if (input==1){
@@ -29,7 +29,7 @@ public class Game {
                 String inputMove = game.player.getMove();
 
                 game.makeMove(inputMove,game.computer);
-                if(game.flag == 1){
+                if(game.isSunk == true){
                     printPlayerBoard(game);
                     break;
                 }
@@ -70,7 +70,7 @@ public class Game {
                 numberOfShipSunk += 1;
                 if (numberOfShipSunk == 5) {
                     System.out.println("You have Won!");
-                    this.flag = 1;
+                    this.isSunk = true;
                 }
                 break;
         }
