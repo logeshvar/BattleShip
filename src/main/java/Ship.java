@@ -2,22 +2,26 @@ public class Ship {
     protected final int rowNo;
     protected final int columnNo;
     protected final int shipLength;
-    protected final int shipDirection;
-    protected int hitArray;
+    private final int  orientation;
+    private int numberOfHits;
+    String[] shipNames= new String[]{"Carrier","Battleship","Destroyer","Submarine","Patrol Boat"};
+    int[] shipLengths = new int[]{5,4,3,3,2};
 
-    Ship(int rowNo, int columnNo, int shipLength, int shipDirection){
-        this.rowNo = rowNo;
-        this.columnNo =columnNo;
+    Ship(Coordinate coordinate, int shipLength, int orientation){
+        this.rowNo = coordinate.getX();
+        this.columnNo =coordinate.getY();
         this.shipLength = shipLength;
-        this.shipDirection = shipDirection;
-        this.hitArray =0;
+        this.orientation = orientation;
+        this.numberOfHits =0;
     }
 
     public void gotHit() {
-        this.hitArray += 1;
+        this.numberOfHits += 1;
     }
 
     public boolean hasSunk() {
-        return this.hitArray == this.shipLength;
+        return this.numberOfHits == this.shipLength;
     }
+
+
 }

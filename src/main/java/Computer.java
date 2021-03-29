@@ -1,37 +1,30 @@
-import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.Random;
-import java.util.Set;
 
 public class Computer {
 
-    private final HashMap<String, Ship> shipHashMap;
-
-    private final int[] shipLengthArray = new int[]{2, 3, 3, 4, 5};
-    private final int max , min;
-    private final int shipsNeeded;
-    private final Set<String> generatedPositions;
+    private final int max, min;
     Board board;
 
-     Computer(Board board) {
+    Computer(Board board) {
         this.board = board;
         board.initialize();
         this.min = 0;
         this.max = board.boardSize;
-        shipsNeeded = 5;
 
-        generatedPositions = new LinkedHashSet<>();
-        Set<Integer> generatedLengthIndexes = new LinkedHashSet<>();
-
-        int[] generatedLength = new int[5];
-        int[] generatedDir = new int[5];
-
-
-        assignShipAtRandomPositions(board,generatedPositions, generatedLengthIndexes, generatedLength, generatedDir);
-        shipHashMap = generateShipHashMap( generatedPositions, generatedLength, generatedDir);
 
     }
 
+    public Coordinate generateRandomCoordinate() {
+        Random random = new Random();
+        int tempColumnNumber = random.nextInt(this.max - this.min) + this.min;
+        int tempRowNumber = random.nextInt(this.max - this.min) + this.min;
+        Coordinate coordinate = new Coordinate(tempRowNumber,tempColumnNumber);
+        return coordinate;
+
+    }
+
+}
+    /*
     private void assignShipAtRandomPositions(Board board,Set<String> generatedPositions, Set<Integer> generatedLengthIndexes, int[] generatedLength, int[] generatedDir) {
         Random random = new Random();
         while (!(generatedPositions.size() == shipsNeeded)) {
@@ -56,9 +49,9 @@ public class Computer {
                 }
             }
         }
-    }
+    }*/
 
-    private int[] getShiftValues(int tempDirection) {
+    /*private int[] getShiftValues(int tempDirection) {
          int[] shiftValues = new int[2];
         if (tempDirection == 0) {
             shiftValues[1] = 1;
@@ -126,4 +119,6 @@ public class Computer {
     public int getGeneratedPositionsSize() {
         return generatedPositions.size();
     }
-}
+
+     */
+
