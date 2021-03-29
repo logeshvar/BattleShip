@@ -30,6 +30,7 @@ public class Game {
 
     public static void main(String[] args) throws InvalidInputMoveException {
         Game game = new Game(10);
+        game.playerBoard.printBoard();
         while(true){
 
             System.out.println("Enter Q to Quit the Game");
@@ -47,22 +48,21 @@ public class Game {
                 ArrayList<Coordinate> coordinateArrayList;
 
                 Coordinate coordinate = game.getCoordinates(inputMove);
-                System.out.println(coordinate.getX() + " " + coordinate.getY());
                 coordinateArrayList = game.computerBoard.checkHitOrMissOrSink(coordinate);
-                int coordinateArrayLength = coordinateArrayList.size();
-                if (coordinateArrayLength == 0) {
+                if (coordinateArrayList == null) {
                     ArrayList<Coordinate> coordinates = new ArrayList<>();
                     coordinates.add(coordinate);
                     game.playerBoard.updateBoard(coordinates, "MISS");
                 }
-                else if(coordinateArrayLength == 1){
-                    game.playerBoard.updateBoard(coordinateArrayList,"HIT");
+                else {
+                    int coordinateArrayLength = coordinateArrayList.size();
+                    if (coordinateArrayLength == 1) {
+                        game.playerBoard.updateBoard(coordinateArrayList, "HIT");
+                    } else {
+                        game.playerBoard.updateBoard(coordinateArrayList, "SINK");
+                        game.numberOfShipSunk += 1;
+                    }
                 }
-                else{
-                   game.playerBoard.updateBoard(coordinateArrayList,"SINK");
-                   game.numberOfShipSunk += 1;
-                }
-
                 System.out.println("Number of ships sunk: " + game.numberOfShipSunk);
                 game.playerBoard.printBoard();
 
@@ -75,7 +75,7 @@ public class Game {
     }
     private Coordinate getCoordinates(String inputMove){
         int y = (int)(Character.toUpperCase(inputMove.charAt(0)))-65;
-        int x = Integer.parseInt(inputMove.substring(1));
+        int x = Integer.parseInt(inputMove.substring(1))-1;
         return new Coordinate(x,y);
     }
 

@@ -18,7 +18,8 @@ public class PlayerBoard {
     }
 
     public void printBoard() {
-        for(int start = 0; start<this.boardSize;start++){ System.out.print(" "+(char)65+start); }
+        System.out.print(" ");
+        for(int start = 0; start<this.boardSize;start++){ System.out.print(" "+(char)(65+start)); }
         System.out.println();
         for (int row = 0; row < this.boardSize; row++) {
             System.out.print(row + " ");
@@ -31,7 +32,7 @@ public class PlayerBoard {
 
     public void updateBoard(ArrayList<Coordinate> coordinates, String hitStatus){
         int x = coordinates.get(0).getX();
-        int y = coordinates.get(1).getY();
+        int y = coordinates.get(0).getY();
         if(hitStatus.equals("MISS")){
             this.boardMatrix[x][y] = 'M';
         }

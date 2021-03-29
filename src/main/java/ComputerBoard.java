@@ -24,6 +24,7 @@ public class ComputerBoard implements Board{
     }
 
     public void printBoard() {
+        System.out.print(" ");
         for(int start = 0; start<this.boardSize;start++){ System.out.print(" "+(char)(65+start)); }
         System.out.println();
         for (int row = 0; row < this.boardSize; row++) {
@@ -37,16 +38,14 @@ public class ComputerBoard implements Board{
 
     public void setShips(String[] shipNames, int[] shipLengths){
         int shipsAssigned = 0;
-        while(shipsAssigned+1!=shipNames.length){
+        while(shipsAssigned!=shipNames.length){
             Coordinate coordinate = computer.generateRandomCoordinate();
             int orientation = new Random().nextInt(orientations);
-            System.out.println(coordinate.getX()+" "+ coordinate.getY()+" "+orientation);
             if(this.checkValidCoordinate(coordinate, shipLengths[shipsAssigned], orientation)){
                 ships[shipsAssigned] = new Ship(shipNames[shipsAssigned],shipLengths[0],coordinate,orientation);
                 ArrayList<Coordinate> coordinatesList = this.updateBoard(coordinate,shipLengths[shipsAssigned],orientation);
                 ships[shipsAssigned].setLocation(coordinatesList);
                 shipsAssigned+=1;
-                System.out.println(ships[shipsAssigned].shipName);
             }
         }
     }
@@ -56,27 +55,29 @@ public class ComputerBoard implements Board{
         ArrayList<Coordinate> coordinateList = new ArrayList<>();
         int x = coordinate.getX();
         int y = coordinate.getY();
-        for (int rowNo = x; rowNo <= rowNo+(rowShift*shipLength); rowNo++) {
-            for (int colNo = y; colNo <= colNo+(columnShift*shipLength); colNo++) {
-                coordinateList.add(new Coordinate(rowNo,colNo));
-                this.boardMatrix[rowNo][colNo] = 's';
+        for (int start =0; start<shipLength; start++){
+            int rowNo = x + (rowShift * start);
+            int colNo = y + (columnShift * start);
+            Coordinate coordinate1 = new Coordinate(rowNo,colNo);
+            coordinateList.add(coordinate1);
+            this.boardMatrix[rowNo][colNo] = 's';
             }
-        }
         return coordinateList;
     }
+
     public boolean checkInvalidInputMove(String inputMove) throws InvalidInputMoveException {
 
         if(inputMove.length() > (Integer.toString(this.boardSize).length()+1) ){
             throw new InvalidInputMoveException("Enter proper input with valid row and column");
         }
         int column = (int)(Character.toUpperCase(inputMove.charAt(0)))-65;
-        if(column >= this.boardSize){
+        if(column<0 || column >= this.boardSize){
             throw new InvalidInputMoveException("Enter proper input with valid column");
         }
 
         int row = Integer.parseInt(inputMove.substring(1));
 
-        if(row > this.boardSize){
+        if(row<1 || row > this.boardSize){
             throw new InvalidInputMoveException("Enter proper input with valid row");
         }
         return true;
@@ -87,9 +88,9 @@ public class ComputerBoard implements Board{
             int columnShift = getShiftValues(orientation)[1], rowShift = getShiftValues(orientation)[0];
             int x = coordinate.getX();
             int y = coordinate.getY();
-            System.out.println(x+" "+y+" "+shipLength);
+            //System.out.println(x+" "+y+" "+shipLength);
             for (int start = 0; start < shipLength; start++) {
-                System.out.println(x+(rowShift*start)+" "+(y +(columnShift*start)));
+                //System.out.println(x+(rowShift*start)+" "+(y +(columnShift*start)));
                 if (this.boardMatrix[x +(rowShift*start)][y +(columnShift*start)] =='s'){
                     return false;
                 }

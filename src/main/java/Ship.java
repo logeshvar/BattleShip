@@ -24,9 +24,11 @@ public class Ship {
     }
 
     public boolean hasSunk() {
-        System.out.println(this.shipName + " has sunk!" );
-        return this.numberOfHits == this.shipLength;
-
+        if(this.numberOfHits == this.shipLength){
+            System.out.println(this.shipName + " has sunk!" );
+            return true;
+        }
+        return false;
     }
 
     public void setLocation(ArrayList<Coordinate> coordinatesList) {
