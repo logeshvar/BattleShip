@@ -6,7 +6,7 @@ class ComputerTest {
 
     @Test
     void shouldReturnTrueIfComputerGeneratesPositionsForShipsNeeded() {
-        Computer computer = new Computer(new Board(10));
+        Computer computer = new Computer(new ComputerBoard(10));
 
         assertEquals(5, computer.getGeneratedPositionsSize());
     }
@@ -22,7 +22,7 @@ class ComputerTest {
         assertTrue(fakeBoard.isCalled);
     }
 
-    private static class FakeBoard extends Board {
+    private static class FakeBoard extends ComputerBoard {
         boolean isCalled;
 
         public FakeBoard(int boardSize) {

@@ -3,15 +3,10 @@ import java.util.Random;
 public class Computer {
 
     private final int max, min;
-    Board board;
 
-    Computer(Board board) {
-        this.board = board;
-        board.initialize();
+    Computer(int size) {
         this.min = 0;
-        this.max = board.boardSize;
-
-
+        this.max = size;
     }
 
     public Coordinate generateRandomCoordinate() {

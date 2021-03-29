@@ -9,9 +9,11 @@ public class Game {
     private boolean isSunk;
 
     public Game(int size) {
-        Board computerBoard = new Board(size);
+        String[] shipNames= new String[]{"Carrier","Battleship","Destroyer","Submarine","Patrol Boat"};
+        int[] shipLengths = new int[]{5,4,3,3,2};
+        computer = new Computer(size);
+        Board computerBoard = new ComputerBoard(size,computer);
         Board playerBoard = new Board(size);
-        computer = new Computer(computerBoard);
         player = new Player(playerBoard);
     }
 

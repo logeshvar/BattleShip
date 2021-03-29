@@ -1,13 +1,17 @@
+import java.util.ArrayList;
+
 public class Ship {
+    protected final String shipName;
     protected final int rowNo;
     protected final int columnNo;
     protected final int shipLength;
-    private final int  orientation;
+    protected final int  orientation;
     private int numberOfHits;
-    String[] shipNames= new String[]{"Carrier","Battleship","Destroyer","Submarine","Patrol Boat"};
-    int[] shipLengths = new int[]{5,4,3,3,2};
+    private ArrayList<Coordinate> coordinatesList = null;
 
-    Ship(Coordinate coordinate, int shipLength, int orientation){
+
+    Ship(String shipName, int shipLength, Coordinate coordinate, int orientation){
+        this.shipName = shipName;
         this.rowNo = coordinate.getX();
         this.columnNo =coordinate.getY();
         this.shipLength = shipLength;
@@ -23,5 +27,7 @@ public class Ship {
         return this.numberOfHits == this.shipLength;
     }
 
-
+    public void setLocation(ArrayList<Coordinate> coordinatesList) {
+        this.coordinatesList = coordinatesList;
+    }
 }
