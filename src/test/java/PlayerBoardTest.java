@@ -25,7 +25,7 @@ class PlayerBoardTest {
         playerBoard.initialize();
         ArrayList<Coordinate> coordinates= new ArrayList<>();
         coordinates.add(new Coordinate(2,2));
-        playerBoard.updateBoard(coordinates,"MISS");
+        playerBoard.updateBoard(coordinates,Result.MISS);
         boolean result = playerBoard.checkIfAlreadyAttacked(new Coordinate(2,2));
         assertTrue(result);
     }
@@ -36,7 +36,7 @@ class PlayerBoardTest {
         playerBoard.initialize();
         ArrayList<Coordinate> coordinates= new ArrayList<>();
         coordinates.add(new Coordinate(2,2));
-        playerBoard.updateBoard(coordinates,"MISS");
+        playerBoard.updateBoard(coordinates,Result.MISS);
         assertEquals('M',playerBoard.boardMatrix[2][2]);
     }
 }

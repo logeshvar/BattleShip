@@ -40,6 +40,7 @@ public class Game {
                 game.computerBoard.printBoard();
             } else if (inputMove.equals("Q") || inputMove.equals("q")) {
                 System.out.println("Computer has won!");
+                game.computerBoard.printBoard();
                 break;
             } else if (game.computerBoard.checkValidInputMove(inputMove)) {
                 ArrayList<Coordinate> coordinateArrayList;
@@ -51,14 +52,14 @@ public class Game {
                         ArrayList<Coordinate> coordinates = new ArrayList<>();
                         coordinates.add(coordinate);
                         System.out.println("MISS");
-                        game.playerBoard.updateBoard(coordinates, "MISS");
+                        game.playerBoard.updateBoard(coordinates, Result.MISS);
                     } else {
                         int coordinateArrayLength = coordinateArrayList.size();
                         if (coordinateArrayLength == 1) {
                             System.out.println("HIT");
-                            game.playerBoard.updateBoard(coordinateArrayList, "HIT");
+                            game.playerBoard.updateBoard(coordinateArrayList, Result.HIT);
                         } else {
-                            game.playerBoard.updateBoard(coordinateArrayList, "SINK");
+                            game.playerBoard.updateBoard(coordinateArrayList, Result.SINK);
                             game.numberOfShipSunk += 1;
                         }
                     }

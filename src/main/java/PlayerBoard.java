@@ -37,13 +37,13 @@ public class PlayerBoard {
         return this.boardMatrix[coordinate.getX()][coordinate.getY()] != '-';
     }
 
-    public void updateBoard(ArrayList<Coordinate> coordinates, String hitStatus) {
+    public void updateBoard(ArrayList<Coordinate> coordinates, Result result) {
         int x = coordinates.get(0).getX();
         int y = coordinates.get(0).getY();
 
-        if (hitStatus.equals("MISS")) {
+        if (result == Result.MISS) {
             this.boardMatrix[x][y] = 'M';
-        } else if (hitStatus.equals("HIT")) {
+        } else if (result == Result.HIT) {
             this.boardMatrix[x][y] = 'H';
         } else {
             for (Coordinate coordinate : coordinates) {
