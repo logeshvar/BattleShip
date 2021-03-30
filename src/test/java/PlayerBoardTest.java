@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class PlayerBoardTest {
     @Test
-    void ShouldInitializeBoardMatrixWithHypenWhenSizeIsProvided() {
+    void ShouldInitializeBoardMatrixWithHyphenWhenSizeIsProvided() {
         PlayerBoard playerBoard = new PlayerBoard(10);
         playerBoard.initialize();
         assertEquals('-',playerBoard.boardMatrix[2][2]);

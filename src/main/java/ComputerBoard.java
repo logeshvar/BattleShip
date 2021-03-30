@@ -2,12 +2,12 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class ComputerBoard implements Board {
-    protected final char[][] boardMatrix;
+    private final char[][] boardMatrix;
     int boardSize;
     Computer computer;
     Ship[] ships;
     @SuppressWarnings("FieldCanBeLocal")
-    private final int orientations = 2;
+    private final int possibleOrientations = 2;
 
     public ComputerBoard(int boardSize, Computer computer) {
         this.boardSize = boardSize;
@@ -43,7 +43,7 @@ public class ComputerBoard implements Board {
         int shipsAssigned = 0;
         while (shipsAssigned != shipNames.length) {
             Coordinate coordinate = computer.generateRandomCoordinate();
-            int orientation = new Random().nextInt(orientations);
+            int orientation = new Random().nextInt(possibleOrientations);
             if (this.checkValidCoordinate(coordinate, shipLengths[shipsAssigned], orientation)) {
                 ships[shipsAssigned] = new Ship(shipNames[shipsAssigned], shipLengths[shipsAssigned], coordinate, orientation);
                 ships[shipsAssigned].setLocation(this);
@@ -109,7 +109,7 @@ public class ComputerBoard implements Board {
     public ArrayList<Coordinate> checkHitOrMissOrSink(Coordinate coordinate) {
 
         for (Ship ship : ships) {
-            if (ship!= null && ship.getLocation().contains(coordinate)) {
+            if (ship != null && ship.getLocation().contains(coordinate)) {
                 ship.gotHit();
                 if (ship.hasSunk()) {
                     return ship.getLocation();
@@ -120,5 +120,13 @@ public class ComputerBoard implements Board {
             }
         }
         return null;
+    }
+
+    public void setBoardMatrixCoordinateValue(Coordinate coordinate,char value){
+        this.boardMatrix[coordinate.getX()][coordinate.getY()] = value;
+    }
+
+    public int getBoardMatrixCoordinateValue(Coordinate coordinate){
+        return this.boardMatrix[coordinate.getX()][coordinate.getY()];
     }
 }

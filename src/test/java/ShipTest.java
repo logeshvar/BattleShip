@@ -37,5 +37,12 @@ class ShipTest {
         assertEquals(3,y2);
     }
 
-    
+    @Test
+    void shouldSetShipCorrectlyInComputerBoardForGivenLengthAndOrientation() {
+        Coordinate coordinate = new Coordinate(2, 2);
+        Ship ship = new Ship("Destroyer",3, coordinate,0);
+        ComputerBoard computerBoard = new ComputerBoard(10, new Computer(10));
+        ship.setLocation(computerBoard);
+        assertEquals('s',computerBoard.getBoardMatrixCoordinateValue(coordinate));
+    }
 }

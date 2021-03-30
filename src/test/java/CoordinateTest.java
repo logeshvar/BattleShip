@@ -23,4 +23,18 @@ class CoordinateTest {
         Coordinate coordinate2 = new Coordinate(3,2);
         assertNotEquals(coordinate2, coordinate1);
     }
+
+    @Test
+    void shouldAddGivenValueToXCoordinateCorrectly() {
+        Coordinate coordinate = new Coordinate(2,2);
+        Coordinate coordinate1 = coordinate.addX(1);
+        assertEquals(3,coordinate1.getX());
+    }
+
+    @Test
+    void shouldAddGivenValueToYCoordinateCorrectly() {
+        Coordinate coordinate = new Coordinate(2,2);
+        Coordinate coordinate1 = coordinate.addY(1);
+        assertEquals(3,coordinate1.getY());
+    }
 }

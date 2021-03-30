@@ -42,7 +42,7 @@ public class Ship {
         for (int value = 0; value < this.shipLength; value++) {
             Coordinate currentCoordinate = coordinate.addX(value);
             coordinates.add(currentCoordinate);
-            computerBoard.boardMatrix[currentCoordinate.getX()][currentCoordinate.getY()] = 's';
+            computerBoard.setBoardMatrixCoordinateValue(currentCoordinate ,'s');
         }
         return coordinates;
     }
@@ -52,7 +52,7 @@ public class Ship {
         for (int value = 0; value < this.shipLength; value++) {
             Coordinate currentCoordinate = coordinate.addY(value);
             coordinates.add(currentCoordinate);
-            computerBoard.boardMatrix[currentCoordinate.getX()][currentCoordinate.getY()] = 's';
+            computerBoard.setBoardMatrixCoordinateValue(currentCoordinate ,'s');
         }
         return coordinates;
     }
