@@ -1,6 +1,5 @@
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -8,7 +7,9 @@ class ShipTest {
     @Test
     void ShouldIncrementHitArrayIfShipGotHit() {
         Ship ship = new Ship("Destroyer",3,new Coordinate(2,2),0);
+
         ship.gotHit();
+
         assertEquals(1,ship.numberOfHits);
 
     }
@@ -16,22 +17,22 @@ class ShipTest {
     @Test
     void ShouldReturnTrueWhenShipHasSunk() {
         Ship ship = new Ship("Destroyer",3,new Coordinate(2,2),0);
+
         ship.gotHit();
         ship.gotHit();
         ship.gotHit();
+
         assertTrue(ship.hasSunk());
     }
 
     @Test
     void shouldReturnCorrectlyAssignedCoordinates(){
         Ship ship = new Ship("Destroyer",3,new Coordinate(2,2),0);
-        ArrayList<Coordinate> coordinates = new ArrayList<>();
-        coordinates.add(new Coordinate(2,2));
-        coordinates.add(new Coordinate(2,3));
-        coordinates.add(new Coordinate(2,4));
-        ship.setLocation(coordinates);
+        ComputerBoard computerBoard = new ComputerBoard(10,new Computer(10));
+        ship.setLocation(computerBoard);
         int x1 = ship.getLocation().get(0).getX();
         int y2 = ship.getLocation().get(1).getY();
+
         assertEquals(2,x1);
         assertEquals(3,y2);
     }

@@ -43,27 +43,13 @@ public class ComputerBoard implements Board{
             int orientation = new Random().nextInt(orientations);
             if(this.checkValidCoordinate(coordinate, shipLengths[shipsAssigned], orientation)){
                 ships[shipsAssigned] = new Ship(shipNames[shipsAssigned],shipLengths[shipsAssigned],coordinate,orientation);
-                ArrayList<Coordinate> coordinatesList = this.updateBoard(coordinate,shipLengths[shipsAssigned],orientation);
-                ships[shipsAssigned].setLocation(coordinatesList);
+                ships[shipsAssigned].setLocation(this);
                 shipsAssigned+=1;
             }
         }
     }
 
-    private ArrayList<Coordinate> updateBoard(Coordinate coordinate, int shipLength, int orientation) {
-        int columnShift = getShiftValues(orientation)[1], rowShift = getShiftValues(orientation)[0];
-        ArrayList<Coordinate> coordinateList = new ArrayList<>();
-        int x = coordinate.getX();
-        int y = coordinate.getY();
-        for (int start =0; start<shipLength; start++){
-            int rowNo = x + (rowShift * start);
-            int colNo = y + (columnShift * start);
-            Coordinate coordinate1 = new Coordinate(rowNo,colNo);
-            coordinateList.add(coordinate1);
-            this.boardMatrix[rowNo][colNo] = 's';
-            }
-        return coordinateList;
-    }
+
 
     public boolean checkValidInputMove(String inputMove){
 

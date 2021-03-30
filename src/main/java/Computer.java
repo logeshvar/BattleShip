@@ -13,8 +13,7 @@ public class Computer {
         Random random = new Random();
         int tempColumnNumber = random.nextInt(this.max - this.min) + this.min;
         int tempRowNumber = random.nextInt(this.max - this.min) + this.min;
-        Coordinate coordinate = new Coordinate(tempRowNumber,tempColumnNumber);
-        return coordinate;
+        return new Coordinate(tempRowNumber,tempColumnNumber);
 
     }
 

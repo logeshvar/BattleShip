@@ -2,8 +2,7 @@ import java.util.ArrayList;
 
 public class Ship {
     protected final String shipName;
-    protected final int rowNo;
-    protected final int columnNo;
+    protected final Coordinate startingPosition;
     protected final int shipLength;
     protected final int  orientation;
     protected int numberOfHits;
@@ -12,8 +11,7 @@ public class Ship {
 
     Ship(String shipName, int shipLength, Coordinate coordinate, int orientation){
         this.shipName = shipName;
-        this.rowNo = coordinate.getX();
-        this.columnNo =coordinate.getY();
+        this.startingPosition = coordinate;
         this.shipLength = shipLength;
         this.orientation = orientation;
         this.numberOfHits =0;
@@ -30,11 +28,38 @@ public class Ship {
         }
         return false;
     }
+    
+    public void setLocation(ComputerBoard computerBoard)
+    {    
+        if(this.orientation == 0){
+            this.coordinatesList = setShipHorizontal(computerBoard,this.startingPosition);
+        }
+        else{
+            this.coordinatesList = setShipVertical(computerBoard,this.startingPosition);
+        }
+    }
 
-    public void setLocation(ArrayList<Coordinate> coordinatesList) {
-        this.coordinatesList = coordinatesList;
+    private ArrayList<Coordinate> setShipVertical(ComputerBoard computerBoard, Coordinate coordinate) {
+        ArrayList<Coordinate> coordinates = new ArrayList<>();
+        for(int value = 0;value<this.shipLength;value++) {
+            Coordinate currentCoordinate = coordinate.addX(value);
+            coordinates.add(currentCoordinate);
+            computerBoard.boardMatrix[currentCoordinate.getX()][currentCoordinate.getY()]='s';
+        }  
+        return coordinates;
+    }
+
+    private ArrayList<Coordinate> setShipHorizontal(ComputerBoard computerBoard,Coordinate coordinate){
+        ArrayList<Coordinate> coordinates = new ArrayList<>();
+        for(int value = 0;value<this.shipLength;value++) {
+            Coordinate currentCoordinate = coordinate.addY(value);
+            coordinates.add(currentCoordinate);
+            computerBoard.boardMatrix[currentCoordinate.getX()][currentCoordinate.getY()]='s';
+        }
+        return coordinates;
     }
     public ArrayList<Coordinate> getLocation(){
         return this.coordinatesList;
     }
+    
 }

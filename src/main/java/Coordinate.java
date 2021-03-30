@@ -28,4 +28,10 @@ public class Coordinate {
     public int hashCode() {
         return Objects.hash(x, y);
     }
+    public Coordinate addX(int value){
+        return new Coordinate(this.x+value,this.y);
+    }
+    public Coordinate addY(int value){
+        return new Coordinate(this.x,this.y+value);
+    }
 }
