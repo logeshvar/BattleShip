@@ -1,7 +1,7 @@
 import java.util.Objects;
 
 public class Coordinate {
-    private final int x,y;
+    private final int x, y;
 
     public Coordinate(int x, int y) {
         this.x = x;
@@ -28,10 +28,12 @@ public class Coordinate {
     public int hashCode() {
         return Objects.hash(x, y);
     }
-    public Coordinate addX(int value){
-        return new Coordinate(this.x+value,this.y);
+
+    public Coordinate addX(int value) {
+        return new Coordinate(this.x + value, this.y);
     }
-    public Coordinate addY(int value){
-        return new Coordinate(this.x,this.y+value);
+
+    public Coordinate addY(int value) {
+        return new Coordinate(this.x, this.y + value);
     }
 }

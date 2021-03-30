@@ -1,8 +1,34 @@
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class ComputerBoardTest {
+    private static final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    private static final PrintStream originalOut = System.out;
+
+    @BeforeAll
+    public static void setUpStreams() {
+        System.setOut(new PrintStream(outContent));
+    }
+
+    @AfterAll
+    public static void restoreStreams() {
+        System.setOut(originalOut);
+    }
+
+    @Test
+    void shouldPrintBoardMatrixWithValues() {
+        ComputerBoard computerBoard = new ComputerBoard(2, new Computer(2));
+        computerBoard.initialize();
+        computerBoard.printBoard();
+        assertEquals("    A B\n  1 - - \n  2 - - \n",outContent.toString());
+    }
+
     @Test
     void shouldSetShipsWhenShipNameAndLengthIsProvided() {
         String[] shipName = new String[]{ "Destroyer","Carrier"};
@@ -40,4 +66,13 @@ class ComputerBoardTest {
 
     }
 
+    @Test
+    void shouldReturnNullIfShipIsNotInCoordinate() {
+        ComputerBoard computerBoard = new ComputerBoard(10, new Computer(10));
+        String[] shipName = new String[]{ "Destroyer","Carrier"};
+        int[] shipLength = new int[]{3,5};
+        computerBoard.initialize();
+        computerBoard.setShips(shipName,shipLength);
+        assertNull(computerBoard.checkHitOrMissOrSink(new Coordinate(1,1)));
+    }
 }
