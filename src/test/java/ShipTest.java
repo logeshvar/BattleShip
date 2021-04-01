@@ -28,7 +28,7 @@ class ShipTest {
     @Test
     void shouldReturnCorrectlyAssignedCoordinates(){
         Ship ship = new Ship("Destroyer",3,new Coordinate(2,2),0);
-        ComputerBoard computerBoard = new ComputerBoard(10,new Computer(10));
+        ComputerBoard computerBoard = new ComputerBoard(10);
         ship.setLocation(computerBoard);
         int x1 = ship.getLocation().get(0).getX();
         int y2 = ship.getLocation().get(1).getY();
@@ -41,7 +41,7 @@ class ShipTest {
     void shouldSetShipCorrectlyInComputerBoardForGivenLengthAndOrientation() {
         Coordinate coordinate = new Coordinate(2, 2);
         Ship ship = new Ship("Destroyer",3, coordinate,0);
-        ComputerBoard computerBoard = new ComputerBoard(10, new Computer(10));
+        ComputerBoard computerBoard = new ComputerBoard(10);
         ship.setLocation(computerBoard);
         assertEquals('s',computerBoard.getBoardMatrixCoordinateValue(coordinate));
     }

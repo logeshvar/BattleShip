@@ -1,7 +1,8 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Game {
-    public static final String CHEATCODE = "122333444455555";
+    private static final String CHEATCODE = "122333444455555";
     private final Player player;
     @SuppressWarnings("FieldCanBeLocal")
     private final Computer computer;
@@ -17,9 +18,9 @@ public class Game {
         shipLengths = new int[]{5, 4, 3, 3, 2};
 
         computer = new Computer(size);
-        computerBoard = new ComputerBoard(size, computer);
+        computerBoard = new ComputerBoard(size);
         computerBoard.initialize();
-        computerBoard.setShips(shipNames, shipLengths);
+        computerBoard.setShips(shipNames, shipLengths, computer);
         playerBoard = new PlayerBoard(size);
         playerBoard.initialize();
 
@@ -31,6 +32,7 @@ public class Game {
     public static void main(String[] args) {
         Game game = new Game(10);
         game.playerBoard.printBoard();
+
         while (true) {
             String inputMove = game.player.getMove();
 
@@ -40,41 +42,61 @@ public class Game {
                 printQuitGameMessage(game);
                 break;
             } else if (game.computerBoard.checkValidInputMove(inputMove)) {
-                ArrayList<Coordinate> coordinateArrayList;
-
                 Coordinate coordinate = game.getCoordinatesFromInputMove(inputMove);
-                if(game.playerBoard.checkIfAlreadyAttacked(coordinate)){
-                    System.out.println("Board coordinate already attacked!");
-                    continue;
-                }
-                coordinateArrayList = game.computerBoard.checkHitOrMissOrSink(coordinate);
-                int coordinateArrayLength = coordinateArrayList.size();
-                if (coordinateArrayLength == 0) {  //Checking for miss
-                    updatePlayerBoardOnHitStatus(game, coordinateArrayList, "MISS", Result.MISS);
-                    continue;
-                }
+                if (alreadyAttackedCoordinate(game, coordinate)) continue;
+                HashMap<String,Object> resultHashMap;
+                resultHashMap = game.computerBoard.checkHitOrMissOrSink(coordinate);
 
-                if (coordinateArrayLength == 1) {
-                    updatePlayerBoardOnHitStatus(game, coordinateArrayList, "HIT", Result.HIT);
-                } else {
-                    updatePlayerBoardOnHitStatus(game, coordinateArrayList, "SINK", Result.SINK);
-                    game.numberOfShipSunk += 1;
-                    if (game.numberOfShipSunk == game.shipNames.length) {
-                        System.out.println("\nYou Won The Game");
-                        break;
-                        }
-                    }
-                }
+                if (missedCoordinate(game, resultHashMap)) continue;
+
+                hitOrSinkShipAtCoordinate(game, resultHashMap);
+                if (allShipsSunk(game)) break;
+            }
             }
         }
+
+    private static boolean allShipsSunk(Game game) {
+        if (game.numberOfShipSunk == game.shipNames.length) {
+            System.out.println("\nYou Won The Game");
+            return true;
+        }
+        return false;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static void hitOrSinkShipAtCoordinate(Game game, HashMap<String, Object> resultHashMap) {
+        if (resultHashMap.get("result") == Result.HIT) {
+            updatePlayerBoardOnHitStatus(game, (ArrayList<Coordinate>) resultHashMap.get("coordinates"),  Result.HIT);
+        } else {
+            updatePlayerBoardOnHitStatus(game, (ArrayList<Coordinate>) resultHashMap.get("coordinates"), Result.SINK);
+            game.numberOfShipSunk += 1;
+            }
+    }
+
+    @SuppressWarnings("unchecked")
+    private static boolean missedCoordinate(Game game, HashMap<String, Object> resultHashMap) {
+        if (resultHashMap.get("result") == Result.MISS) {
+            updatePlayerBoardOnHitStatus(game, (ArrayList<Coordinate>) resultHashMap.get("coordinates"),  Result.MISS);
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean alreadyAttackedCoordinate(Game game, Coordinate coordinate) {
+        if(game.playerBoard.checkIfAlreadyAttacked(coordinate)){
+            System.out.println("Board coordinate already attacked!");
+            return true;
+        }
+        return false;
+    }
 
     private static void printQuitGameMessage(Game game) {
         System.out.println("\nComputer has won!");
         game.computerBoard.printBoard();
     }
 
-    private static void updatePlayerBoardOnHitStatus(Game game, ArrayList<Coordinate> coordinateArrayList, String status, Result hitStatus) {
-        System.out.println(status);
+    private static void updatePlayerBoardOnHitStatus(Game game, ArrayList<Coordinate> coordinateArrayList, Result hitStatus) {
+        System.out.println(hitStatus);
         game.playerBoard.updateBoard(coordinateArrayList, hitStatus);
         System.out.println("\nNumber of ships sunk: " + game.numberOfShipSunk);
         game.playerBoard.printBoard();

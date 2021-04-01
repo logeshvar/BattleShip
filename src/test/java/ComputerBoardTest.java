@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -23,7 +24,7 @@ class ComputerBoardTest {
 
     @Test
     void shouldPrintBoardMatrixWithValues() {
-        ComputerBoard computerBoard = new ComputerBoard(2, new Computer(2));
+        ComputerBoard computerBoard = new ComputerBoard(2);
         computerBoard.initialize();
         computerBoard.printBoard();
         assertEquals("    A B\n  1 - - \n  2 - - \n",outContent.toString());
@@ -33,8 +34,8 @@ class ComputerBoardTest {
     void shouldSetShipsWhenShipNameAndLengthIsProvided() {
         String[] shipName = new String[]{ "Destroyer","Carrier"};
         int[] shipLength = new int[]{3,5};
-        ComputerBoard computerBoard = new ComputerBoard(10,new Computer(10));
-        computerBoard.setShips(shipName,shipLength);
+        ComputerBoard computerBoard = new ComputerBoard(10);
+        computerBoard.setShips(shipName,shipLength,new Computer(10));
         int n = 0;
         for(int shipCount = 0;shipCount<5;shipCount++){
             if(computerBoard.ships[shipCount] != null){
@@ -46,17 +47,17 @@ class ComputerBoardTest {
 
     @Test
     void shouldReturnTrueForValidInputMove(){
-        ComputerBoard computerBoard = new ComputerBoard(10, new Computer(10));
+        ComputerBoard computerBoard = new ComputerBoard(10);
         String inputMove = "A1";
         boolean result = computerBoard.checkValidInputMove(inputMove);
         assertTrue(result);
     }
     @Test
     void shouldReturnFalseForInvalidInputMove(){
-        ComputerBoard computerBoard = new ComputerBoard(10, new Computer(10));
+        ComputerBoard computerBoard = new ComputerBoard(10);
         String inputMove1 = "A11";
         String inputMove2 = "s1";
-        String inputMove3 = "awertq";
+        String inputMove3 = "shipAtA1";
         boolean result1 = computerBoard.checkValidInputMove(inputMove1);
         boolean result2 = computerBoard.checkValidInputMove(inputMove2);
         boolean result3 = computerBoard.checkValidInputMove(inputMove3);
@@ -68,11 +69,12 @@ class ComputerBoardTest {
 
     @Test
     void shouldReturnNullIfShipIsNotInCoordinate() {
-        ComputerBoard computerBoard = new ComputerBoard(10, new Computer(10));
+        ComputerBoard computerBoard = new ComputerBoard(10);
         String[] shipName = new String[]{ "Destroyer","Carrier"};
         int[] shipLength = new int[]{3,5};
         computerBoard.initialize();
-        computerBoard.setShips(shipName,shipLength);
-        assertNull(computerBoard.checkHitOrMissOrSink(new Coordinate(1,1)));
+        computerBoard.setShips(shipName,shipLength, new Computer(10));
+        HashMap<String,Object> result = computerBoard.checkHitOrMissOrSink(new Coordinate(1,1));
+        assertEquals(Result.MISS,result.get("result"));
     }
 }

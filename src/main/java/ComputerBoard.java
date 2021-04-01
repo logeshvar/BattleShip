@@ -1,17 +1,16 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 public class ComputerBoard implements Board {
     private final char[][] boardMatrix;
     int boardSize;
-    Computer computer;
     Ship[] ships;
     @SuppressWarnings("FieldCanBeLocal")
     private final int possibleOrientations = 2;
 
-    public ComputerBoard(int boardSize, Computer computer) {
+    public ComputerBoard(int boardSize) {
         this.boardSize = boardSize;
-        this.computer = computer;
         boardMatrix = new char[boardSize][boardSize];
         ships = new Ship[5];
     }
@@ -39,7 +38,7 @@ public class ComputerBoard implements Board {
         }
     }
 
-    public void setShips(String[] shipNames, int[] shipLengths) {
+    public void setShips(String[] shipNames, int[] shipLengths, Computer computer) {
         int shipsAssigned = 0;
         while (shipsAssigned != shipNames.length) {
             Coordinate coordinate = computer.generateRandomCoordinate();
@@ -106,18 +105,30 @@ public class ComputerBoard implements Board {
         return orientation == 0 && (coordinate.addY(shipLength).getY()) <= this.boardSize;
     }
 
-    public ArrayList<Coordinate> checkHitOrMissOrSink(Coordinate coordinate) {
+    public HashMap<String,Object> checkHitOrMissOrSink(Coordinate coordinate) {
+        HashMap<String,Object> resultHashMap = new HashMap<>();
         ArrayList<Coordinate> coordinatesList = new ArrayList<>();
         for (Ship ship : ships) {
             if (ship.getLocation().contains(coordinate)) {
                 ship.gotHit();
                 if (ship.hasSunk()) {
-                    return ship.getLocation();
+                    putCoordinateAndResultInHashMap(resultHashMap, ship.getLocation(), Result.SINK);
+                    return  resultHashMap;
                 }
                 coordinatesList.add(coordinate);
+                putCoordinateAndResultInHashMap(resultHashMap, coordinatesList, Result.HIT);
+                return resultHashMap;
             }
         }
-        return coordinatesList;
+        coordinatesList.add(coordinate);
+        putCoordinateAndResultInHashMap(resultHashMap, coordinatesList, Result.MISS);
+        System.out.println(resultHashMap);
+        return resultHashMap;
+    }
+
+    private void putCoordinateAndResultInHashMap(HashMap<String, Object> resultHashMap, ArrayList<Coordinate> coordinatesList, Result miss) {
+        resultHashMap.put("coordinates", coordinatesList);
+        resultHashMap.put("result", miss);
     }
 
     public void setBoardMatrixCoordinateValue(Coordinate coordinate,char value){
