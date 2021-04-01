@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 
 public class Game {
+    public static final String CHEATCODE = "122333444455555";
     private final Player player;
     @SuppressWarnings("FieldCanBeLocal")
     private final Computer computer;
@@ -31,53 +32,55 @@ public class Game {
         Game game = new Game(10);
         game.playerBoard.printBoard();
         while (true) {
-
-            System.out.println("Enter Q to Quit the Game");
-            System.out.print("Enter your position guess:");
             String inputMove = game.player.getMove();
 
-            if (inputMove.equals("122333444455555")) {
+            if (inputMove.equals(CHEATCODE)) {
                 game.computerBoard.printBoard();
             } else if (inputMove.equals("Q") || inputMove.equals("q")) {
-                System.out.println("Computer has won!");
-                game.computerBoard.printBoard();
+                printQuitGameMessage(game);
                 break;
             } else if (game.computerBoard.checkValidInputMove(inputMove)) {
                 ArrayList<Coordinate> coordinateArrayList;
 
-                Coordinate coordinate = game.getCoordinates(inputMove);
-                if (!game.playerBoard.checkIfAlreadyAttacked(coordinate)) {
-                    coordinateArrayList = game.computerBoard.checkHitOrMissOrSink(coordinate);
-                    if (coordinateArrayList == null) {
-                        ArrayList<Coordinate> coordinates = new ArrayList<>();
-                        coordinates.add(coordinate);
-                        System.out.println("MISS");
-                        game.playerBoard.updateBoard(coordinates, Result.MISS);
-                    } else {
-                        int coordinateArrayLength = coordinateArrayList.size();
-                        if (coordinateArrayLength == 1) {
-                            System.out.println("HIT");
-                            game.playerBoard.updateBoard(coordinateArrayList, Result.HIT);
-                        } else {
-                            game.playerBoard.updateBoard(coordinateArrayList, Result.SINK);
-                            game.numberOfShipSunk += 1;
+                Coordinate coordinate = game.getCoordinatesFromInputMove(inputMove);
+                if(game.playerBoard.checkIfAlreadyAttacked(coordinate)){
+                    System.out.println("Board coordinate already attacked!");
+                    continue;
+                }
+                coordinateArrayList = game.computerBoard.checkHitOrMissOrSink(coordinate);
+                int coordinateArrayLength = coordinateArrayList.size();
+                if (coordinateArrayLength == 0) {  //Checking for miss
+                    updatePlayerBoardOnHitStatus(game, coordinateArrayList, "MISS", Result.MISS);
+                    continue;
+                }
+
+                if (coordinateArrayLength == 1) {
+                    updatePlayerBoardOnHitStatus(game, coordinateArrayList, "HIT", Result.HIT);
+                } else {
+                    updatePlayerBoardOnHitStatus(game, coordinateArrayList, "SINK", Result.SINK);
+                    game.numberOfShipSunk += 1;
+                    if (game.numberOfShipSunk == game.shipNames.length) {
+                        System.out.println("\nYou Won The Game");
+                        break;
                         }
                     }
-                    System.out.println("Number of ships sunk: " + game.numberOfShipSunk);
-                    game.playerBoard.printBoard();
-
-                    if (game.numberOfShipSunk == game.shipNames.length) {
-                        System.out.println("You Won The Game");
-                        break;
-                    }
-                } else {
-                    System.out.println("Board Coordinate Already Attacked!");
                 }
             }
         }
+
+    private static void printQuitGameMessage(Game game) {
+        System.out.println("\nComputer has won!");
+        game.computerBoard.printBoard();
     }
 
-    private Coordinate getCoordinates(String inputMove) {
+    private static void updatePlayerBoardOnHitStatus(Game game, ArrayList<Coordinate> coordinateArrayList, String status, Result hitStatus) {
+        System.out.println(status);
+        game.playerBoard.updateBoard(coordinateArrayList, hitStatus);
+        System.out.println("\nNumber of ships sunk: " + game.numberOfShipSunk);
+        game.playerBoard.printBoard();
+    }
+
+    private Coordinate getCoordinatesFromInputMove(String inputMove) {
         int y = (int) (Character.toUpperCase(inputMove.charAt(0))) - 65;
         int x = Integer.parseInt(inputMove.substring(1)) - 1;
         return new Coordinate(x, y);

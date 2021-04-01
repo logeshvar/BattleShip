@@ -36,8 +36,8 @@ class ComputerBoardTest {
         ComputerBoard computerBoard = new ComputerBoard(10,new Computer(10));
         computerBoard.setShips(shipName,shipLength);
         int n = 0;
-        for(int i = 0;i<5;i++){
-            if(computerBoard.ships[i] != null){
+        for(int shipCount = 0;shipCount<5;shipCount++){
+            if(computerBoard.ships[shipCount] != null){
                 n += 1;
             }
         }

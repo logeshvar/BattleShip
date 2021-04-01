@@ -107,19 +107,17 @@ public class ComputerBoard implements Board {
     }
 
     public ArrayList<Coordinate> checkHitOrMissOrSink(Coordinate coordinate) {
-
+        ArrayList<Coordinate> coordinatesList = new ArrayList<>();
         for (Ship ship : ships) {
-            if (ship != null && ship.getLocation().contains(coordinate)) {
+            if (ship.getLocation().contains(coordinate)) {
                 ship.gotHit();
                 if (ship.hasSunk()) {
                     return ship.getLocation();
                 }
-                ArrayList<Coordinate> coordinatesList = new ArrayList<>();
                 coordinatesList.add(coordinate);
-                return coordinatesList;
             }
         }
-        return null;
+        return coordinatesList;
     }
 
     public void setBoardMatrixCoordinateValue(Coordinate coordinate,char value){
